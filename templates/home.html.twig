@@ -9,7 +9,7 @@
         .container {
             padding: 5px 10px;
             border: 1px solid black;
-            height: 200px;
+            min-height: 120px;
             width: 600px;
             margin: auto;
         }
@@ -24,11 +24,26 @@
     <div class="container">
         <section>
             <h2>Initiate the project</h2>
-            <button>Initialize</button>
+            <button><a href="{{ path('import_init') }}">Initialize</a></button>
         </section>
 
         <section>
-            <h2>Other action</h2>
+            <h2>Create the model</h2>
+            <button>Act</button>
+        </section>
+
+        <section>
+            <h2>Clean data</h2>
+            <button>Act</button>
+        </section>
+
+        <section>
+            <h2>Upgrade data</h2>
+            <button>Act</button>
+        </section>
+
+        <section>
+            <h2>Export data</h2>
             <button>Act</button>
         </section>
     </div>
