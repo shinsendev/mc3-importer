@@ -10,7 +10,7 @@ use App\Component\MySQL\Connection\MySQLConnection;
 
 class MySQLInitialization
 {
-    public static function init()
+    static function init()
     {
         $connection = MySQLConnection::connection("127.0.0.1:8889", "root", "root");
 

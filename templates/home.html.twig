@@ -18,23 +18,44 @@
             padding-bottom: 10px;
             border-bottom: 1px solid grey;
         }
+
+        header h1 {
+            text-align: center;
+            padding-bottom: 30px;
+        }
     </style>
     <title>MC2 to MC3 data convertor</title>
 
     <div class="container">
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <header>
+            <h1><a href="{{ path('home') }}">MC2 data convertor</a></h1>
+        </header>
+
+        <section>
+            <h2>All process</h2>
+            <button><a href="{{ path('import_all') }}">Go!</a></button>
+        </section>
+
         <section>
             <h2>Initiate the project</h2>
             <button><a href="{{ path('import_init') }}">Initialize</a></button>
         </section>
 
         <section>
-            <h2>Create the model</h2>
-            <button>Act</button>
+            <h2>Create the model and import data</h2>
+            <button><a href="{{ path('import_creation') }}">Create</a></button>
         </section>
 
         <section>
             <h2>Clean data</h2>
-            <button>Act</button>
+            <button><a href="{{ path('import_clean') }}">Clean</a></button>
         </section>
 
         <section>
