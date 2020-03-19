@@ -26,7 +26,7 @@ class ImportController extends AbstractController
         $this->addFlash('success', 'Everything is ok');
         return $this->forward('App\Controller\DefaultController::index');
     }
- 
+
     /**
      * @Route("/import/init", name="import_init")
      */
