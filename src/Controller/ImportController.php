@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Component\MySQL\Clean\MySQLClean;
 use App\Component\MySQL\Import\MySQLImport;
 use App\Component\MySQL\Initialization\MySQLInitialization;
+use App\Component\PostgreSQL\Connection\PostgreSQLConnection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -24,7 +25,7 @@ class ImportController extends AbstractController
         MySQLClean::clean();
 
         $this->addFlash('success', 'Everything is ok');
-        return $this->forward('App\Controller\DefaultController::index');
+        return $this->redirectToRoute('home');
     }
 
     /**
@@ -35,7 +36,7 @@ class ImportController extends AbstractController
         MySQLInitialization::init();
 
         $this->addFlash('success', 'Initialisation ok');
-        return $this->forward('App\Controller\DefaultController::index');
+        return $this->redirectToRoute('home');
     }
 
     /**
@@ -46,7 +47,7 @@ class ImportController extends AbstractController
         MySQLImport::import('../data/mc2.sql');
 
         $this->addFlash('success', 'DB structure has been created and data has been imported');
-        return $this->forward('App\Controller\DefaultController::index');
+        return $this->redirectToRoute('home');
     }
 
     /**
@@ -56,7 +57,7 @@ class ImportController extends AbstractController
     {
         MySQLClean::clean();
         $this->addFlash('success', 'DB has been cleaned.');
-        return $this->forward('App\Controller\DefaultController::index');
+        return $this->redirectToRoute('home');
     }
 
     /**
@@ -64,7 +65,7 @@ class ImportController extends AbstractController
      */
     public function upgrade()
     {
-        return $this->forward('App\Controller\DefaultController::index');
+        return $this->redirectToRoute('home');
     }
 
     /**
@@ -72,7 +73,16 @@ class ImportController extends AbstractController
      */
     public function export()
     {
-        return $this->forward('App\Controller\DefaultController::index');
+        return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/import/test", name="import_test")
+     */
+    public function test()
+    {
+        PostgreSQLConnection::connection('','','');
+        return $this->redirectToRoute('home');
     }
     
 }
