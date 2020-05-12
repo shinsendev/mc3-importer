@@ -12,7 +12,7 @@ class MySQLClean
 {
     static function clean()
     {
-        $connection = MySQLConnection::connection("127.0.0.1:8889", "root", "root", "mc2");
+        $connection = MySQLConnection::connection();
         $sqlList = [
             'DROP TABLE IF EXISTS `stagenumber_has_costume`;',
             'DROP TABLE IF EXISTS `stagenumber_has_dancecontent`;',

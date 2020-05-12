@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Component\Migration\ImportFilms;
 use App\Component\MySQL\Clean\MySQLClean;
 use App\Component\MySQL\Import\MySQLImport;
 use App\Component\MySQL\Initialization\MySQLInitialization;
@@ -81,7 +82,8 @@ class ImportController extends AbstractController
      */
     public function test()
     {
-        PostgreSQLConnection::connection('','','');
+        ImportFilms::importBulk(0, 1);
+
         return $this->redirectToRoute('home');
     }
     

@@ -3,17 +3,16 @@
 declare(strict_types=1);
 
 
-namespace App\Component\MySQL\Connection;
+namespace App\Component\PostgreSQL\Connection;
 
 
-class MySQLConnection
+class PostgreSQLConnection
 {
     static function connection()
     {
         try {
-            $host = $_SERVER['MYSQL_SERVER'];
-            $db = $_SERVER['MYSQL_DB'];
-            $connection = new \PDO("mysql:host=$host;dbname=$db", $_SERVER['MYSQL_USER'], $_SERVER['MYSQL_PWD'], []);
+            $connection = new \PDO("pgsql:host=".$_SERVER['PGSQL_SERVER'].";port=".$_SERVER['PGSQL_PORT'].";dbname=".$_SERVER['PGSQL_DB'], $_SERVER['PGSQL_USER'], $_SERVER['PGSQL_PWD'], []);
+
             // set the PDO error mode to exception
             $connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         }
