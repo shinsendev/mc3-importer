@@ -9,5 +9,6 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
+/.env
 .idea/*
-data/*
+/data/*

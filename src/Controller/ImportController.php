@@ -82,7 +82,7 @@ class ImportController extends AbstractController
      */
     public function test()
     {
-        ImportFilms::importBulk(0, 1);
+        ImportFilms::importBulk(0, 2000);
 
         return $this->redirectToRoute('home');
     }
