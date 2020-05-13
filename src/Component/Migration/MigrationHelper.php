@@ -11,7 +11,34 @@ use App\Component\PostgreSQL\Connection\PostgreSQLConnection;
 
 class MigrationHelper
 {
-    static public function importBulk($offset, $limit, $sql, $insertFunction = null)
+    /**
+     * @param string $itemType
+     * @param string $insertFunctionName
+     * @param int $limit
+     */
+    static public function importAll(string $itemType, string $insertFunctionName, int $limit = 1000)
+    {
+        // count number of film
+        $mysql = MySQLConnection::connection();
+        $sql = 'SELECT COUNT(*) as nb FROM '.$itemType;
+        $stmt = $mysql->query($sql);
+        $stmt->execute();
+        $count = ($stmt->fetch()['nb']);
+
+        // divide count by bulk size
+        $iterationsCount = ceil($count/$limit);
+
+        // save all films bulks
+        $offset = 0;
+
+        for ($i = 0; $i < $iterationsCount; $i++) {
+            MigrationHelper::importBulk($offset, $limit, 'SELECT * FROM '.$itemType.' LIMIT %d, %d', $insertFunctionName);
+            $offset = $offset+$limit;
+        }
+
+    }
+
+    static public function importBulk($offset, $limit, $sql, $insertFunctionName)
     {
         // connect to MySQL and get films list
         $mysql = MySQLConnection::connection();
@@ -20,14 +47,14 @@ class MigrationHelper
         $sql = sprintf($sql, $offset, $limit);
         $stmt = $mysql->prepare($sql);
         $stmt->execute();
-        $films = $stmt->fetchAll();
+        $items = $stmt->fetchAll();
 
         // connect to PostgreSQL and insert the usefull data of the list
         $psql = PostgreSQLConnection::connection();
 
         // the we insert the films one by one
-        foreach ($films as $film) {
-            self::insertFilm($psql, $film);
+        foreach ($items as $item) {
+            $insertFunctionName($psql, $item);
         }
 
         return true;

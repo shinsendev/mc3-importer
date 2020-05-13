@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Component\Migration\ImportFilms;
+use App\Component\Migration\MigrationHelper;
 use App\Component\MySQL\Clean\MySQLClean;
 use App\Component\MySQL\Import\MySQLImport;
 use App\Component\MySQL\Initialization\MySQLInitialization;
@@ -26,14 +27,16 @@ class ImportController extends AbstractController
         MySQLClean::clean();
 
         // import categories (from code)
-
+        MigrationHelper::importAll('code', 'App\Component\Migration', 500);
 
         // import attributes (from thesaurus)
 
         // import films
-        ImportFilms::importAll(500);
+//        ImportFilms::importAll(500);
+        MigrationHelper::importAll('film', 'App\Component\Migration\ImportFilms::insertFilm', 500);
 
         // import films attributes
+
 
         // import numbers
 
@@ -87,29 +90,33 @@ class ImportController extends AbstractController
     }
 
     /**
-     * @Route("/import/upgrade", name="import_upgrade")
+     * @Route("/import/categories", name="import_categories")
      */
-    public function upgrade()
+    public function importCategories()
     {
+        MigrationHelper::importAll('code', 'App\Component\Migration\ImportCategories::insert', 500);
+
         return $this->redirectToRoute('home');
     }
 
     /**
-     * @Route("/import/export", name="import_export")
+     * @Route("/import/attributes", name="import_attributes")
      */
-    public function export()
+    public function importAttributes()
     {
+        MigrationHelper::importAll('thesaurus', 'App\Component\Migration\ImportAttributes::insert', 500);
+
         return $this->redirectToRoute('home');
     }
 
     /**
-     * @Route("/import/test", name="import_test")
+     * @Route("/import/films", name="import_films")
      */
-    public function test()
+    public function importFilms()
     {
-        ImportFilms::importAll(500);
+        MigrationHelper::importAll('film', 'App\Component\Migration\ImportFilms::insert', 500);
 
         return $this->redirectToRoute('home');
     }
-    
+
 }

@@ -10,60 +10,11 @@ use Ramsey\Uuid\Uuid;
 
 class ImportFilms
 {
-    static public function importAll($limit = 1000)
-    {
-        // count number of film
-        $mysql = MySQLConnection::connection();
-        $sql = 'SELECT COUNT(*) as nb FROM film';
-        $stmt = $mysql->query($sql);
-        $stmt->execute();
-        $count = ($stmt->fetch()['nb']);
-
-        // divide count by bulk size
-        $iterationsCount = ceil($count/$limit);
-
-        // save all films bulks
-        $offset = 0;
-
-        for ($i = 0; $i < $iterationsCount; $i++) {
-            self::importBulk($offset, $limit);
-            $offset = $offset+$limit;
-        }
-
-    }
-
-    /**
-     * @param int $offset
-     * @param int $max
-     * @return bool
-     */
-    static public function importBulk($offset, $limit)
-    {
-        // connect to MySQL and get films list
-        $mysql = MySQLConnection::connection();
-
-        // extract film list in an array (we need to pass int $limit and $offset in a special way for mysql and not as parameters: https://stackoverflow.com/questions/10014147/limit-keyword-on-mysql-with-prepared-statement)
-        $sql = sprintf('SELECT * FROM film LIMIT %d, %d', $offset, $limit);
-        $stmt = $mysql->prepare($sql);
-        $stmt->execute();
-        $films = $stmt->fetchAll();
-
-        // connect to PostgreSQL and insert the usefull data of the list
-        $psql = PostgreSQLConnection::connection();
-
-        // the we insert the films one by one
-        foreach ($films as $film) {
-            self::insertFilm($psql, $film);
-        }
-
-        return true;
-    }
-
     /**
      * @param $connection
      * @param $film
      */
-    static public function insertFilm($connection, $film)
+    static public function insert($connection, $film):void
     {
         $uuid = Uuid::uuid4()->toString();
         $date = new \DateTime();
