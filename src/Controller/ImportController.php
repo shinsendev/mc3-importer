@@ -25,6 +25,31 @@ class ImportController extends AbstractController
         MySQLImport::import('../data/mc2.sql');
         MySQLClean::clean();
 
+        // import categories (from code)
+
+
+        // import attributes (from thesaurus)
+
+        // import films
+        ImportFilms::importAll(500);
+
+        // import films attributes
+
+        // import numbers
+
+        // import numbers attributes
+
+        // import songs
+
+        // import songs attributes
+
+        // import all persons
+
+        // import all distributor
+
+        // import all studio
+
+
         $this->addFlash('success', 'Everything is ok');
         return $this->redirectToRoute('home');
     }
@@ -82,7 +107,7 @@ class ImportController extends AbstractController
      */
     public function test()
     {
-        ImportFilms::importBulk(0, 2000);
+        ImportFilms::importAll(500);
 
         return $this->redirectToRoute('home');
     }

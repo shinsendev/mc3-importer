@@ -10,12 +10,34 @@ use Ramsey\Uuid\Uuid;
 
 class ImportFilms
 {
+    static public function importAll($limit = 1000)
+    {
+        // count number of film
+        $mysql = MySQLConnection::connection();
+        $sql = 'SELECT COUNT(*) as nb FROM film';
+        $stmt = $mysql->query($sql);
+        $stmt->execute();
+        $count = ($stmt->fetch()['nb']);
+
+        // divide count by bulk size
+        $iterationsCount = ceil($count/$limit);
+
+        // save all films bulks
+        $offset = 0;
+
+        for ($i = 0; $i < $iterationsCount; $i++) {
+            self::importBulk($offset, $limit);
+            $offset = $offset+$limit;
+        }
+
+    }
+
     /**
      * @param int $offset
      * @param int $max
      * @return bool
      */
-    static public function importBulk($offset = 0, $limit = 100)
+    static public function importBulk($offset, $limit)
     {
         // connect to MySQL and get films list
         $mysql = MySQLConnection::connection();
