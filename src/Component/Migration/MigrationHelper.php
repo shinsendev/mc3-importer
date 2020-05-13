@@ -54,10 +54,26 @@ class MigrationHelper
 
         // the we insert the films one by one
         foreach ($items as $item) {
-            $insertFunctionName($psql, $item);
+            $insertFunctionName($psql, $item, $mysql);
         }
 
         return true;
+    }
+
+    static public function getCategoryId($thesaurus, $psql, $mysql)
+    {
+        // get the correct category id and add it in the insert
+        // get code content = the name in MySQL db
+        $rsl = $mysql->prepare('SELECT * FROM code WHERE code_id = :code');
+        $rsl->execute(['code' => $thesaurus['code_id']]);
+        $code = $rsl->fetch()['content'];
+
+        // get the category id in PostgreSQL db
+        $rsl = $psql->prepare('SELECT id FROM category WHERE code = :code');
+        $rsl->execute(['code' => $code]);
+
+        // return psql category id
+        return $rsl->fetch()['id'];
     }
 
 }

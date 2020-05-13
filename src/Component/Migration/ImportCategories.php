@@ -12,14 +12,14 @@ use Ramsey\Uuid\Uuid;
  */
 class ImportCategories
 {
-    static public function insert($connection, $code):void
+    static public function insert($psql, $code, $mysql):void
     {
         $uuid = Uuid::uuid4()->toString();
         $date = new \DateTime();
         $date = $date->format('Y-m-d H:i:s');
 
         $sql = "INSERT INTO category (title, code, description, uuid, created_at, updated_at) VALUES (:title, :code, :description, :uuid, :createdAt, :updatedAt)";
-        $rsl = $connection->prepare($sql);
+        $rsl = $psql->prepare($sql);
         $rsl->execute([
             // set correct values
             'title' => ($code['title']) ? $code['title'] : null,
