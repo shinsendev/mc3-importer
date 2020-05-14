@@ -7,7 +7,7 @@ namespace App\Component\Migration;
 
 use Ramsey\Uuid\Uuid;
 
-class ImportAttributes
+class ImportAttributes implements ImporterInterface
 {
     static public function insert($psql, $thesaurus, $mysql):void
     {

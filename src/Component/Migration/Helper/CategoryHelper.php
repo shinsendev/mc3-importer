@@ -31,16 +31,31 @@ class CategoryHelper
 
     static public function getCategory(string $categoryTitle, string $model, \PDO $psql, \PDO $mysql):int
     {
-        //todo : add model type
         // try to find an existing category
-        $rsl = $psql->prepare('SELECT id FROM category WHERE title = :title');
+        $rsl = $psql->prepare('SELECT id FROM category WHERE title = :title AND model = :model');
         $rsl->execute([
-            'title' => $categoryTitle
+            'title' => $categoryTitle,
+            'model' => $model,
         ]);
-        dd($rsl->fetch());
+
+        // if we find a category, cool, we return it
+        if ($category = $rsl->fetch()) {
+            return $category;
+        }
+
+        // else we have to create a new one
+
         $categoryId = 0;
         // if not exists create a new one
 
         return $categoryId;
     }
+
+    static public function createCategory(array $params, \PDO $pgsql)
+    {
+        $sql = "INSERT INTO category (title, code, description, uuid, created_at, updated_at) VALUES (:title, :code, :description, :uuid, :createdAt, :updatedAt)";
+        $rsl = $pgsql->prepare($sql);
+        $rsl->execute($params);
+    }
+
 }

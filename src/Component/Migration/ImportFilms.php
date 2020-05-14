@@ -7,7 +7,7 @@ namespace App\Component\Migration;
 use App\Component\Migration\Helper\AttributeHelper;
 use Ramsey\Uuid\Uuid;
 
-class ImportFilms
+class ImportFilms implements ImporterInterface
 {
     /**
      * @param $psql
