@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Component\Migration;
 
-use App\Component\MySQL\Connection\MySQLConnection;
-use App\Component\PostgreSQL\Connection\PostgreSQLConnection;
+use App\Component\Migration\Helper\AttributeHelper;
 use Ramsey\Uuid\Uuid;
 
 class ImportFilms
@@ -36,58 +35,31 @@ class ImportFilms
             'uuid' => $uuid
         ]);
 
-        // add films attributes
+        // add films attributes (todo: create an attribute list and refacto with a foreach?)
         if ($film['adapatation']) {
-            //todo : refacto into helper
-
-            // select corresponding mysql thesaurus
-            $stm = $mysql->prepare('SELECT * FROM thesaurus WHERE thesaurus_id = :thesaurusId');
-            $stm->execute(['thesaurusId' => $film['adapatation']]);
-            $thesaurus = $stm->fetch();
-
-            // find corresponding postgres category
-            $categoryId = MigrationHelper::getCategoryId($thesaurus, $psql, $mysql);
-
-            // find corresponding postgres attribute
-            $stm = $psql->prepare('SELECT * FROM attribute WHERE title = :title AND category_id = :category');
-            $stm->execute([
-                'title' => $thesaurus['title'],
-                'category' => $categoryId
-            ]);
-            $attribute = $stm->fetch();
-
-            // get film id of the last film inserted
-            $stm = $psql->prepare('SELECT LASTVAL() as item_id');
-            $stm->execute();
-            $lastItemId = $stm->fetch()['item_id'];
-
-            // insert attribute into psql film_attribute table
-            $stm = $psql->prepare('INSERT INTO film_attribute (film_id, attribute_id) VALUES (:item, :attribute)');
-            $stm->execute([
-                'item' => $lastItemId,
-                'attribute' => $attribute['id'],
-            ]);
+            AttributeHelper::importAttribute($film['adapatation'], 'adaptation', 'film', $psql, $mysql);
         }
 
         if ($film['verdict']) {
-
+            AttributeHelper::importAttribute($film['verdict'], 'verdict', 'film', $psql, $mysql);
         }
 
         if ($film['legion']) {
-
+            AttributeHelper::importAttribute($film['legion'], 'legion', 'film', $psql, $mysql);
         }
 
         if ($film['protestant']) {
-
+            AttributeHelper::importAttribute($film['protestant'], 'protestant', 'film', $psql, $mysql);
         }
 
         if ($film['harrisson']) {
-
+            AttributeHelper::importAttribute($film['harrisson'], 'harrison', 'film', $psql, $mysql);
         }
 
         if ($film['bord']) {
-
+            AttributeHelper::importAttribute($film['bord'], 'board', 'film', $psql, $mysql);
         }
 
+        //todo:import links with persons + state & censorship
     }
 }

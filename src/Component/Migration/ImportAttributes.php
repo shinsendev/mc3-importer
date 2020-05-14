@@ -28,11 +28,8 @@ class ImportAttributes
         $rsl->execute(['code' => $code]);
         $categoryId = $rsl->fetch()['id'];
 
-        // insert MySQL data into PostgreSQL
-        $sql = "INSERT INTO attribute (title, description, example, uuid, created_at, updated_at, category_id) VALUES (:title, :definition, :example, :uuid, :createdAt, :updatedAt, :categoryId)";
-        $rsl = $psql->prepare($sql);
-        $rsl->execute([
-            // set correct values
+        // set correct values for execute
+        $params = [
             'title' => ($thesaurus['title']) ? $thesaurus['title'] : null,
             'definition' => ($thesaurus['definition']) ? $thesaurus['definition'] : null,
             'example' => ($thesaurus['example']) ? $thesaurus['example'] : null,
@@ -40,8 +37,18 @@ class ImportAttributes
             'updatedAt' => ($thesaurus['last_update'] && $thesaurus['date_creation'] > 0) ? $thesaurus['last_update'] : $date,
             'uuid' => $uuid,
             'categoryId' => $categoryId,
-        ]);
+        ];
+
+        // insert data into PostgreSQL attribute table
+        self::saveAttribute($params, $psql);
 
         //todo : add comment
+    }
+
+    public static function saveAttribute(array $params, \PDO $psql)
+    {
+        $sql = "INSERT INTO attribute (title, description, example, uuid, created_at, updated_at, category_id) VALUES (:title, :definition, :example, :uuid, :createdAt, :updatedAt, :categoryId)";
+        $rsl = $psql->prepare($sql);
+        $rsl->execute($params);
     }
 }

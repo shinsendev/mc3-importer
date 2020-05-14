@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Component\Migration\MigrationHelper;
+use App\Component\Migration\Helper\MigrationHelper;
 use App\Component\MySQL\Clean\MySQLClean;
 use App\Component\MySQL\Import\MySQLImport;
 use App\Component\MySQL\Initialization\MySQLInitialization;

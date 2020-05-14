@@ -8,6 +8,9 @@ namespace App\Component\PostgreSQL\Connection;
 
 class PostgreSQLConnection
 {
+    /**
+     * @return \PDO
+     */
     static function connection()
     {
         try {
