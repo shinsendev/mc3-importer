@@ -7,6 +7,7 @@ namespace App\Component\Migration\Helper;
 
 use App\Component\MySQL\Connection\MySQLConnection;
 use App\Component\PostgreSQL\Connection\PostgreSQLConnection;
+use Ramsey\Uuid\Uuid;
 
 class MigrationHelper
 {
@@ -57,5 +58,15 @@ class MigrationHelper
         }
 
         return true;
+    }
+
+    static function createBaseParams()
+    {
+        $params = [];
+        $params['uuid'] = Uuid::uuid4()->toString();
+        $date = new \DateTime();
+        $params['date'] = $date->format('Y-m-d H:i:s');
+
+        return $params;
     }
 }

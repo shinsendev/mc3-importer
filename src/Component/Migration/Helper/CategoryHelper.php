@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-
 namespace App\Component\Migration\Helper;
 
-
+/**
+ * Class CategoryHelper
+ * @package App\Component\Migration\Helper
+ */
 class CategoryHelper
 {
     /**
@@ -29,10 +31,10 @@ class CategoryHelper
         return $rsl->fetch()['id'];
     }
 
-    static public function getCategory(string $categoryTitle, string $model, \PDO $psql, \PDO $mysql):int
+    static public function getCategory(string $categoryTitle, string $model, \PDO $pgsql, \PDO $mysql):int
     {
         // try to find an existing category
-        $rsl = $psql->prepare('SELECT id FROM category WHERE title = :title AND model = :model');
+        $rsl = $pgsql->prepare('SELECT id FROM category WHERE title = :title AND model = :model');
         $rsl->execute([
             'title' => $categoryTitle,
             'model' => $model,
@@ -40,20 +42,34 @@ class CategoryHelper
 
         // if we find a category, cool, we return it
         if ($category = $rsl->fetch()) {
-            return $category;
+            return $category['id'];
         }
 
         // else we have to create a new one
+        $basics = MigrationHelper::createBaseParams();
 
-        $categoryId = 0;
-        // if not exists create a new one
+        $params = [
+            // set correct values
+            'title' => $categoryTitle,
+            'code' => $categoryTitle,
+            'model' => $model,
+            'description' => null,
+            'createdAt' => $basics['date'],
+            'updatedAt' => $basics['date'],
+            'uuid' => $basics['uuid']
+        ];
+        self::insertCategory($params, $pgsql);
 
-        return $categoryId;
+        // and we eventually return the last id of the category created
+        $stm = $pgsql->prepare('  SELECT currval(pg_get_serial_sequence(\'category\',\'id\')) as category_id');
+        $stm->execute();
+
+        return $stm->fetch()['category_id'];
     }
 
-    static public function createCategory(array $params, \PDO $pgsql)
+    static public function insertCategory(array $params, \PDO $pgsql)
     {
-        $sql = "INSERT INTO category (title, code, description, uuid, created_at, updated_at) VALUES (:title, :code, :description, :uuid, :createdAt, :updatedAt)";
+        $sql = "INSERT INTO category (title, code, description, model, uuid, created_at, updated_at) VALUES (:title, :code, :description, :model, :uuid, :createdAt, :updatedAt)";
         $rsl = $pgsql->prepare($sql);
         $rsl->execute($params);
     }

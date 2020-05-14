@@ -23,13 +23,14 @@ class ImportCategories implements ImporterInterface
             // set correct values
             'title' => ($code['title']) ? $code['title'] : null,
             'code' => ($code['content']) ? $code['content'] : null,
+            'model' => null,
             'description' => ($code['description']) ? $code['description'] : null,
             'createdAt' => ($code['date_creation']) ? $code['date_creation'] : $date,
             'updatedAt' => ($code['last_update']) ? $code['last_update'] : $date,
             'uuid' => $uuid
         ];
 
-        CategoryHelper::createCategory($params, $pgsql);
+        CategoryHelper::insertCategory($params, $pgsql);
     }
 
 }
