@@ -34,8 +34,6 @@ class ImportController extends AbstractController
         // import films
         MigrationHelper::importAll('film', 'App\Component\Migration\ImportFilms::insert', 500);
 
-        // import films attributes
-
         // import numbers
 
         // import numbers attributes

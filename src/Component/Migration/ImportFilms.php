@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Component\Migration;
 
 use App\Component\Migration\Helper\AttributeHelper;
+use App\Component\Migration\Helper\MigrationHelper;
 use Ramsey\Uuid\Uuid;
 
 class ImportFilms implements ImporterInterface
@@ -15,9 +16,7 @@ class ImportFilms implements ImporterInterface
      */
     static public function insert($psql, array $film, $mysql):void
     {
-        $uuid = Uuid::uuid4()->toString();
-        $date = new \DateTime();
-        $date = $date->format('Y-m-d H:i:s');
+        $basics = MigrationHelper::createBaseParams();
 
         $sql = "INSERT INTO film (title, uuid, production_year, released_year, imdb, length, remake, pca, created_at, updated_at) VALUES (:title, :uuid, :productionYear, :released, :imdb, :length, :remake, :pca, :createdAt, :updatedAt)";
         $rsl = $psql->prepare($sql);
@@ -30,9 +29,9 @@ class ImportFilms implements ImporterInterface
             'length' => ($film['length']) ? $film['length'] : null,
             'remake' => ($film['remake']) ? $film['remake'] : null,
             'pca' => ($film['pca_texte']) ? $film['pca_texte'] : null,
-            'createdAt' => $date,
-            'updatedAt' => $date,
-            'uuid' => $uuid
+            'createdAt' => $basics['date'],
+            'updatedAt' => $basics['date'],
+            'uuid' => $basics['uuid']
         ]);
 
         // add films attributes (todo: create an attribute list and refacto with a foreach?)
