@@ -41,7 +41,7 @@ class AttributeHelper
 
         // then we import the relationship
 
-        // get film id of the last related entity inserted
+        // get id of the last related entity inserted
         $stm = $psql->prepare('SELECT currval(pg_get_serial_sequence(\''.$modelType.'\',\'id\')) as item_id');
         $stm->execute();
         $lastItemId = $stm->fetch()['item_id'];
@@ -52,7 +52,7 @@ class AttributeHelper
         ];
 
         // insert attribute into psql entity_attribute table
-        $stm = $psql->prepare('INSERT INTO '.$modelType.'_attribute (film_id, attribute_id) VALUES (:item, :attribute)');
+        $stm = $psql->prepare('INSERT INTO '.$modelType.'_attribute ('.$modelType.'_id, attribute_id) VALUES (:item, :attribute)');
         $stm->execute($params);
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Component\Migration;
 
+use App\Component\Migration\Helper\AttributeHelper;
 use App\Component\Migration\Helper\FilmHelper;
 use App\Component\Migration\Helper\MigrationHelper;
 
@@ -34,6 +35,46 @@ class ImportNumbers implements ImporterInterface
             'updatedAt' => ($number['last_update'] && $number['last_update'] > 0) ? $number['last_update'] : $basics['date'],
             'uuid' => $basics['uuid']
         ]);
+
+        if ($number['dubbing']) {
+            AttributeHelper::importAttribute($number['dubbing'], 'dubbing', 'number', $pgsql, $mysql);
+        }
+
+        if ($number['structure_id']) {
+            AttributeHelper::importAttribute($number['structure_id'], 'structure', 'number', $pgsql, $mysql);
+        }
+
+        if ($number['begin_thesaurus']) {
+            AttributeHelper::importAttribute($number['begin_thesaurus'], 'begin', 'number', $pgsql, $mysql);
+        }
+
+        if ($number['ending_thesaurus']) {
+            AttributeHelper::importAttribute($number['ending_thesaurus'], 'ending', 'number', $pgsql, $mysql);
+        }
+
+        if ($number['completeness_id']) {
+            AttributeHelper::importAttribute($number['completeness_id'], 'completeness', 'number', $pgsql, $mysql);
+        }
+
+        if ($number['performance_thesaurus_id']) {
+            AttributeHelper::importAttribute($number['performance_thesaurus_id'], 'performance', 'number', $pgsql, $mysql);
+        }
+
+        if ($number['spectators_thesaurus_id']) {
+            AttributeHelper::importAttribute($number['spectators_thesaurus_id'], 'spectators', 'number', $pgsql, $mysql);
+        }
+
+        if ($number['musician_thesaurus_id']) {
+            AttributeHelper::importAttribute($number['musician_thesaurus_id'], 'musicians', 'number', $pgsql, $mysql);
+        }
+
+        if ($number['tempo_thesaurus']) {
+            AttributeHelper::importAttribute($number['tempo_thesaurus'], 'tempo', 'number', $pgsql, $mysql);
+        }
+
+        if ($number['cast_id']) {
+            AttributeHelper::importAttribute($number['cast_id'], 'cast', 'number', $pgsql, $mysql);
+        }
     }
 
 }
