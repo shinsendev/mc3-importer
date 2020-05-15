@@ -35,12 +35,10 @@ class ImportController extends AbstractController
         MigrationHelper::importAll('film', 'App\Component\Migration\ImportFilms::insert', 500);
 
         // import numbers
-
-        // import numbers attributes
+        MigrationHelper::importAll('number', 'App\Component\Migration\ImportNumbers::insert', 500);
 
         // import songs
-
-        // import songs attributes
+        MigrationHelper::importAll('song', 'App\Component\Migration\ImportSongs::insert', 500);
 
         // import all persons
 
@@ -121,6 +119,16 @@ class ImportController extends AbstractController
     public function importNumbers()
     {
         MigrationHelper::importAll('number', 'App\Component\Migration\ImportNumbers::insert', 500);
+
+        return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/import/songs", name="import_songs")
+     */
+    public function importSongs()
+    {
+        MigrationHelper::importAll('song', 'App\Component\Migration\ImportSongs::insert', 500);
 
         return $this->redirectToRoute('home');
     }
