@@ -22,7 +22,7 @@ class ImportNumbers implements ImporterInterface
         // use $number['film_id']
         $filmId = FilmHelper::findFilmByMsqlId((int)$number['film_id'], $pgsql, $mysql);
 
-        $sql = "INSERT INTO number (title, film_id, begin_tc, end_tc, shots, quotation, uuid, created_at, updated_at) VALUES (:title, :film, :begin, :end, :shots, :quotation, :uuid, :createdAt, :updatedAt)";
+        $sql = "INSERT INTO number (title, film_id, begin_tc, end_tc, shots, quotation, uuid, created_at, updated_at) VALUES (:title, :film, :begin, :end, :shots, :references, :uuid, :createdAt, :updatedAt)";
         $rsl = $pgsql->prepare($sql);
         $rsl->execute([
             'title' => ($number['title']) ? $number['title'] : null,
@@ -30,7 +30,7 @@ class ImportNumbers implements ImporterInterface
             'begin' => ($number['begin_tc']) ? $number['begin_tc'] : 0,
             'end' => ($number['end_tc']) ? $number['end_tc'] : 0,
             'shots' => ($number['shots']) ? $number['shots'] : null,
-            'quotation' => ($number['quotation_text']) ? $number['quotation_text'] : null,
+            'references' => ($number['quotation_text']) ? $number['quotation_text'] : null,
             'createdAt' => ($number['date_creation'] && $number['last_update'] > 0) ? $number['date_creation'] : $basics['date'],
             'updatedAt' => ($number['last_update'] && $number['last_update'] > 0) ? $number['last_update'] : $basics['date'],
             'uuid' => $basics['uuid']
