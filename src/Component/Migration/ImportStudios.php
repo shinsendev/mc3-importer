@@ -20,11 +20,18 @@ class ImportStudios implements ImporterInterface
         MigrationHelper::savePgSQL($pgsql, self::writeSQL(), self::configure($studio));
     }
 
+    /**
+     * @return string
+     */
     static public function writeSQL():string
     {
         return "INSERT INTO studio (name, uuid, created_at, updated_at) VALUES (:name, :uuid, :createdAt, :updatedAt)";
     }
 
+    /**
+     * @param array $studio
+     * @return array
+     */
     static public function configure(array $studio):array
     {
         $basics = MigrationHelper::createBaseParams();
