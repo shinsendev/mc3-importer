@@ -143,4 +143,14 @@ class ImportController extends AbstractController
         return $this->redirectToRoute('home');
     }
 
+    /**
+     * @Route("/import/studios", name="import_studios")
+     */
+    public function importStudios()
+    {
+        MigrationHelper::importAll('studio', 'App\Component\Migration\ImportStudios::insert', 500);
+
+        return $this->redirectToRoute('home');
+    }
+
 }

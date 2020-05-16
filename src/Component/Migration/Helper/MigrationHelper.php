@@ -69,4 +69,10 @@ class MigrationHelper
 
         return $params;
     }
+
+    static public function savePgSQL(\PDO $pgsql, string $sql, array $params)
+    {
+        $rsl = $pgsql->prepare($sql);
+        $rsl->execute($params);
+    }
 }
