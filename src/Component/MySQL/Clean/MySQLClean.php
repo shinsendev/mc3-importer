@@ -60,6 +60,7 @@ class MySQLClean
             'DROP TABLE IF EXISTS `validation`;',
             'DROP TABLE IF EXISTS `number_has_generalmood`;',
             'DROP TABLE IF EXISTS `migration_versions`;',
+            'DROP TABLE IF EXISTS `film_has_director`;',
 
             'ALTER TABLE film DROP color;',
             'ALTER TABLE film DROP ratio;',
