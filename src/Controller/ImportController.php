@@ -163,4 +163,13 @@ class ImportController extends AbstractController
         return $this->redirectToRoute('home');
     }
 
+    /**
+     * @Route("/import/users", name="import_users")
+     */
+    public function importUsers()
+    {
+        MigrationHelper::importAll('fos_user', 'App\Component\Migration\ImportUsers::insert', 500);
+
+        return $this->redirectToRoute('home');
+    }
 }
