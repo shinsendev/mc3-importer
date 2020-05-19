@@ -14,8 +14,9 @@ class ImportPersons implements ImporterInterface
      * @param \PDO $pgsql
      * @param array $person
      * @param \PDO $mysql
+     * @param array $params
      */
-    static public function insert(\PDO $pgsql, array $person, \PDO $mysql)
+    static public function insert(\PDO $pgsql, array $person, \PDO $mysql,  $params = []):void
     {
         if ($person['name']) {
             preg_match('/(.*\s)(\S*)/', $person['name'], $matches, PREG_OFFSET_CAPTURE);

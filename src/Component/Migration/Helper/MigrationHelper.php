@@ -12,31 +12,119 @@ use Ramsey\Uuid\Uuid;
 class MigrationHelper
 {
     /**
+     * @param string $tableName
+     * @param int $limit
+     * @param \PDO $mysql
+     * @return float
+     */
+    static public function countIteration(string $tableName, int $limit, \PDO $mysql):float
+    {
+        // count number of the items
+        $sql = 'SELECT COUNT(*) as nb FROM '.$tableName;
+        $stmt = $mysql->query($sql);
+        $stmt->execute();
+        $count = ($stmt->fetch()['nb']);
+
+        // divide count by bulk size and return the iteration count
+        return ceil($count/$limit);
+    }
+
+    /**
      * @param string $itemType
      * @param string $insertFunctionName
      * @param int $limit
      */
     static public function importAll(string $itemType, string $insertFunctionName, int $limit = 1000):void
     {
-        // count number of film
-        $mysql = MySQLConnection::connection();
-        $sql = 'SELECT COUNT(*) as nb FROM '.$itemType;
-        $stmt = $mysql->query($sql);
-        $stmt->execute();
-        $count = ($stmt->fetch()['nb']);
-
-        // divide count by bulk size
-        $iterationsCount = ceil($count/$limit);
-
-        // save all films bulks
-        $offset = 0;
-
         // connect to PostgreSQL and insert the usefull data of the list
         $pgsql = PostgreSQLConnection::connection();
 
         // connect to MySQL and get films list
         $mysql = MySQLConnection::connection();
 
+        // divide count by bulk size
+        $iterationsCount = self::countIteration($itemType, $limit, $mysql);
+
+        // save all films bulks
+        $offset = 0;
+
+       self::manageExceptions($itemType, $pgsql);
+
+        for ($i = 0; $i < $iterationsCount; $i++) {
+            MigrationHelper::importBulk($offset, $limit, $pgsql, $mysql, 'SELECT * FROM '.$itemType.' LIMIT %d, %d', $insertFunctionName, $itemType);
+            $offset = $offset+$limit;
+        }
+
+        // remove the mysql_id column (add to final clean function)
+//        MigrationHelper::removeSQLid($pgsql, $itemType);
+    }
+
+    /**
+     * @param string $mySQLTableName
+     * @param string $pgSQLTableName
+     * @param string $source
+     * @param string $target
+     * @param int $limit
+     */
+    static public function importRelations(string $mySQLTableName, string $pgSQLTableName, string $source, string $target, int $limit = 1000)
+    {
+        // connect to PostgreSQL and insert the usefull data of the list
+        $pgsql = PostgreSQLConnection::connection();
+
+        // count number of iterations for import
+        $iterationsCount = self::countIteration();
+
+        // save all films bulks
+        $offset = 0;
+
+        $mysql = MySQLConnection::connection();
+
+        for ($i = 0; $i < $iterationsCount; $i++) {
+            $sql = sprintf('SELECT * FROM '.$mySQLTableName.' LIMIT %d, %d', $offset, $limit);
+            $stmt = $mysql->prepare($sql);
+            $stmt->execute();
+            $relations = $stmt->fetchAll();
+
+            // the we insert the films one by one
+            foreach ($relations as $relation) {
+                self::insertRelation($pgSQLTableName, $relation, $source, $target, $pgsql);
+            }
+            $offset = $offset+$limit;
+        }
+    }
+
+    /**
+     * @param string $pgSQLTableName
+     * @param array $relation
+     * @param string $sourceType
+     * @param string $targetType
+     * @param \PDO $pgsql
+     * @param bool $isThesaurus
+     */
+    public static function insertRelation(string $pgSQLTableName, array $relation, string $sourceType, string $targetType, \PDO $pgsql, bool $isThesaurus = false) : void
+    {
+        $sql = 'INSERT INTO '.$pgSQLTableName.' VALUES(:source, :target)';
+        $stmt = $pgsql->prepare($sql);
+
+        $sourceIdName = $sourceType.'_id';
+        $sourceId = MigrationHelper::getEntityByMySQLId($pgsql, $relation[$sourceIdName], $sourceType);
+
+        // if it is a thesaurus, the target is an attribute
+        $targetIdName = $targetType.'_id';
+        if ($isThesaurus) {
+            $targetType = 'attribute';
+        }
+
+        $targetId = MigrationHelper::getEntityByMySQLId($pgsql, $relation[$targetIdName], $targetType);
+        $stmt->execute(['source' => $sourceId, 'target' => $targetId]);
+    }
+
+    /**
+     * @param string $itemType
+     * @param \PDO $pgsql
+     */
+    static public function manageExceptions(string $itemType,\PDO $pgsql):void
+    {
         // manage exceptions
         if ($itemType === 'fos_user') {
             $mysqlTableName = 'user';
@@ -66,14 +154,6 @@ class MigrationHelper
                 MigrationHelper::addMySQLId($pgsql, $mysqlTableName);
             }
         }
-
-        for ($i = 0; $i < $iterationsCount; $i++) {
-            MigrationHelper::importBulk($offset, $limit, $pgsql, $mysql, 'SELECT * FROM '.$itemType.' LIMIT %d, %d', $insertFunctionName, $itemType);
-            $offset = $offset+$limit;
-        }
-
-        // remove the mysql_id column (add to final clean function)
-//        MigrationHelper::removeSQLid($pgsql, $itemType);
     }
 
     /**
@@ -167,56 +247,5 @@ class MigrationHelper
         $stm->execute(['id' => $mysqlId]);
 
         return $stm->fetch()['id'];
-    }
-
-    /**
-     * @param string $mySQLTableName
-     * @param string $pgSQLTableName
-     * @param string $source
-     * @param string $target
-     * @param int $limit
-     */
-    static public function importRelations(string $mySQLTableName, string $pgSQLTableName, string $source, string $target, int $limit = 1000)
-    {
-        // count number of film
-        $mysql = MySQLConnection::connection();
-        $sql = 'SELECT COUNT(*) as nb FROM '.$mySQLTableName;
-        $stmt = $mysql->query($sql);
-        $stmt->execute();
-        $count = ($stmt->fetch()['nb']);
-
-        // divide count by bulk size
-        $iterationsCount = ceil($count/$limit);
-
-        // save all films bulks
-        $offset = 0;
-
-        // connect to PostgreSQL and insert the usefull data of the list
-        $pgsql = PostgreSQLConnection::connection();
-
-        // connect to MySQL and get films list
-        $mysql = MySQLConnection::connection();
-
-        for ($i = 0; $i < $iterationsCount; $i++) {
-            $sql = sprintf('SELECT * FROM '.$mySQLTableName.' LIMIT %d, %d', $offset, $limit);
-            $stmt = $mysql->prepare($sql);
-            $stmt->execute();
-            $relations = $stmt->fetchAll();
-
-            // the we insert the films one by one
-            foreach ($relations as $relation) {
-                $sql = 'INSERT INTO '.$pgSQLTableName.' VALUES(:source, :target)';
-                $stmt = $pgsql->prepare($sql);
-
-                $sourceIdName = $source.'_id';
-                $sourceId = MigrationHelper::getEntityByMySQLId($pgsql, $relation[$sourceIdName], $source);
-
-                $targetIdName = $target.'_id';
-                $targetId = MigrationHelper::getEntityByMySQLId($pgsql, $relation[$targetIdName], $target);
-
-                $stmt->execute(['source' => $sourceId, 'target' => $targetId]);
-            }
-            $offset = $offset+$limit;
-        }
     }
 }

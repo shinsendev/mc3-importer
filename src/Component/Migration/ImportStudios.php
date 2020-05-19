@@ -15,7 +15,7 @@ class ImportStudios implements ImporterInterface
      * @param array $studio
      * @param \PDO $mysql
      */
-    static public function insert(\PDO $pgsql, array $studio, \PDO $mysql):void
+    static public function insert(\PDO $pgsql, array $studio, \PDO $mysql, $params = []):void
     {
         MigrationHelper::savePgSQL($pgsql, self::writeSQL(), self::configure($studio));
     }

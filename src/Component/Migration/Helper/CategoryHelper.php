@@ -31,7 +31,13 @@ class CategoryHelper
         return $rsl->fetch()['id'];
     }
 
-    static public function getCategory(string $categoryTitle, string $model, \PDO $pgsql, \PDO $mysql):int
+    /**
+     * @param string $categoryTitle
+     * @param string $model
+     * @param \PDO $pgsql
+     * @return string|null
+     */
+    static public function getCategory(string $categoryTitle, string $model, \PDO $pgsql):?int
     {
         // try to find an existing category
         $rsl = $pgsql->prepare('SELECT id FROM category WHERE title = :title AND model = :model');
@@ -43,6 +49,26 @@ class CategoryHelper
         // if we find a category, cool, we return it
         if ($category = $rsl->fetch()) {
             return $category['id'];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $categoryTitle
+     * @param string $model
+     * @param \PDO $pgsql
+     * @return int
+     */
+    static public function createCategory(string $categoryTitle, string $model, \PDO $pgsql):int
+    {
+        // try to find an existing category, if we find a category, cool, we return it
+        if ($category = self::getCategory($categoryTitle, $model, $pgsql)) {
+            // if we get an array we return the result with index id
+            if (gettype($category) === 'array') {
+                $category = $category['id'];
+            }
+            return $category;
         }
 
         // else we have to create a new one

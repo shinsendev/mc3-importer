@@ -10,7 +10,7 @@ use App\Component\Migration\Helper\MigrationHelper;
 
 class ImportUsers implements ImporterInterface
 {
-    static public function insert(\PDO $pgsql, array $user, \PDO $mysql)
+    static public function insert(\PDO $pgsql, array $user, \PDO $mysql, $params = []):void
     {
         MigrationHelper::savePgSQL($pgsql, self::writeSQL(), self::configure($user));
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Component\Migration;
 
 use App\Component\Migration\Helper\AttributeHelper;
+use App\Component\Migration\Helper\CategoryHelper;
 use App\Component\Migration\Helper\MigrationHelper;
 use App\Component\Migration\Helper\PersonHelper;
 use Ramsey\Uuid\Uuid;
@@ -14,10 +15,12 @@ class ImportFilms implements ImporterInterface
     CONST MODEL = 'film';
 
     /**
-     * @param $pgsql
+     * @param \PDO $pgsql
      * @param array $film
+     * @param \PDO $mysql
+     * @param array $params
      */
-    static public function insert($pgsql, array $film, $mysql):void
+    static public function insert($pgsql, array $film, $mysql, $params = []):void
     {
         $basics = MigrationHelper::createBaseParams();
 
@@ -51,6 +54,7 @@ class ImportFilms implements ImporterInterface
             AttributeHelper::importAttribute($film['legion'], 'legion', 'film', $pgsql, $mysql);
         }
 
+
         if ($film['protestant']) {
             AttributeHelper::importAttribute($film['protestant'], 'protestant', 'film', $pgsql, $mysql);
         }
@@ -76,9 +80,8 @@ class ImportFilms implements ImporterInterface
         // add producers
         PersonHelper::importLinkedPersons('film_has_producer', 'producer', $pgsql,  $mysql, $personParams);
 
-
-        // todo:import links state & censorship
-
         // todo: import users
     }
+
+
 }

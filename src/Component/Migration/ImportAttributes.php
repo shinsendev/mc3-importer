@@ -5,11 +5,15 @@ declare(strict_types=1);
 
 namespace App\Component\Migration;
 
+use App\Component\Migration\Helper\CategoryHelper;
+use App\Component\Migration\Helper\MigrationHelper;
+use App\Component\MySQL\Connection\MySQLConnection;
+use App\Component\PostgreSQL\Connection\PostgreSQLConnection;
 use Ramsey\Uuid\Uuid;
 
 class ImportAttributes implements ImporterInterface
 {
-    static public function insert($psql, $thesaurus, $mysql):void
+    static public function insert($psql, $thesaurus, $mysql, $params = []):void
     {
         $uuid = Uuid::uuid4()->toString();
         $date = new \DateTime();
@@ -37,6 +41,7 @@ class ImportAttributes implements ImporterInterface
             'updatedAt' => ($thesaurus['last_update'] && $thesaurus['date_creation'] > 0) ? $thesaurus['last_update'] : $date,
             'uuid' => $uuid,
             'categoryId' => $categoryId,
+            'mysqlId' => $thesaurus['thesaurus_id']
         ];
 
         // insert data into PostgreSQL attribute table
@@ -45,10 +50,110 @@ class ImportAttributes implements ImporterInterface
         //todo : add comment
     }
 
-    public static function saveAttribute(array $params, \PDO $psql)
+    /**
+     * @param array $params
+     * @param \PDO $psql
+     */
+    public static function saveAttribute(array $params, \PDO $psql):void
     {
-        $sql = "INSERT INTO attribute (title, description, example, uuid, created_at, updated_at, category_id) VALUES (:title, :definition, :example, :uuid, :createdAt, :updatedAt, :categoryId)";
+        $sql = "INSERT INTO attribute (title, description, example, uuid, created_at, updated_at, category_id, mysql_id) VALUES (:title, :definition, :example, :uuid, :createdAt, :updatedAt, :categoryId, :mysqlId)";
         $rsl = $psql->prepare($sql);
         $rsl->execute($params);
+    }
+
+    /**
+     * @param string $categoryTitle
+     * @param string $mysqlTableName
+     * @param string $relationTableName
+     * @param string $model
+     * @param int $limit
+     * @param bool $isThesaurus
+     */
+    public static function importExternalThesaurusString(
+        string $categoryTitle,
+        string $mysqlTableName,
+        string $mySQLRelationTableName,
+        string $pgSQLRelationTableName,
+        string $model,
+        int $limit = 1000,
+        bool $isThesaurus = false
+    ) :void
+    {
+        // connect to PostgreSQL and insert the usefull data of the list
+        $pgsql = PostgreSQLConnection::connection();
+
+        // connect to MySQL and get films list
+        $mysql = MySQLConnection::connection();
+
+        $basics = MigrationHelper::createBaseParams();
+
+        // create a new category (todo: check if not exists)
+        $params = [
+            // set correct values
+            'title' => $categoryTitle,
+            'code' => $categoryTitle,
+            'model' => $model,
+            'description' => null,
+            'createdAt' => $basics['date'],
+            'updatedAt' => $basics['date'],
+            'uuid' => $basics['uuid']
+        ];
+        CategoryHelper::insertCategory($params, $pgsql);
+
+        // get the new created categoryId
+        $categoryId = CategoryHelper::getCategory($categoryTitle, $model, $pgsql);;
+
+        // we add some pagination for importing attributes
+        $iterationsCount = MigrationHelper::countIteration($mysqlTableName, $limit, $mysql);
+        $offset = 0;
+
+        // import new attributes in attributes table
+        for ($i = 0; $i < $iterationsCount; $i++) {
+            $sql = sprintf('SELECT * FROM ' . $mysqlTableName . ' LIMIT %d, %d', $offset, $limit);
+            $stmt = $mysql->prepare($sql);
+            $stmt->execute();
+            $attributes = $stmt->fetchAll();
+
+            // the we insert the films one by one
+            foreach($attributes as $attribute) {
+                $attributeIdName = $categoryTitle.'_id';
+                $params = [
+                    'title' => ($attribute['title']) ? $attribute['title'] : null,
+                    'definition' =>  null,
+                    'example' =>  null,
+                    'createdAt' => ($attribute['date_creation'] && $attribute['date_creation'] > 0 ) ? $attribute['date_creation'] : $basics['date'],
+                    'updatedAt' => ($attribute['last_update'] && $attribute['date_creation'] > 0) ? $attribute['last_update'] : $basics['date'],
+                    'uuid' => $basics['uuid'],
+                    'categoryId' => $categoryId,
+                    'mysqlId' => $attribute[$attributeIdName]
+                ];
+                ImportAttributes::saveAttribute($params, $pgsql);
+            }
+            $offset = $offset + $limit;
+        }
+
+        // import all relations
+        $iterationsCount = MigrationHelper::countIteration($mySQLRelationTableName, $limit, $mysql);
+        $offset = 0;
+
+        // import new attributes in attributes table
+        for ($i = 0; $i < $iterationsCount; $i++) {
+            $sql = sprintf('SELECT * FROM ' . $mySQLRelationTableName . ' LIMIT %d, %d', $offset, $limit);
+            $stmt = $mysql->prepare($sql);
+            $stmt->execute();
+            $relations = $stmt->fetchAll();
+
+            // the we insert the films one by one
+            foreach($relations as $relation) {
+                MigrationHelper::insertRelation($pgSQLRelationTableName, $relation, $model, $categoryTitle, $pgsql, $isThesaurus);
+            }
+            $offset = $offset + $limit;
+        }
+    }
+
+
+    public static function importExternalThesaurusReferences()
+    {
+
     }
 }

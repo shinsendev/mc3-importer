@@ -10,5 +10,5 @@ namespace App\Component\Migration;
  */
 interface ImporterInterface
 {
-    static public function insert(\PDO $pgsql, array $itemsList, \PDO $mysql);
+    static public function insert(\PDO $pgsql, array $itemsList, \PDO $mysql, array $params):void;
 }

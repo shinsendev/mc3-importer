@@ -10,7 +10,7 @@ use App\Component\Migration\Helper\MigrationHelper;
 
 class ImportDistributors implements ImporterInterface
 {
-    static public function insert(\PDO $pgsql, array $distributor, \PDO $mysql):void
+    static public function insert(\PDO $pgsql, array $distributor, \PDO $mysql, $params = []):void
     {
         MigrationHelper::savePgSQL($pgsql, self::writeSQL(), self::configure($distributor));
     }

@@ -94,7 +94,7 @@ class AttributeHelper
     ):int
     {
         // get the attribute category already exists
-        $categoryId = CategoryHelper::getCategory($category, $model, $pgsql, $mysql);
+        $categoryId = CategoryHelper::createCategory($category, $model, $pgsql);
         // create a new category in psql, if there is an error, we will have to find the existing familly
         $uuid = Uuid::uuid4()->toString();
         $date = new \DateTime();
@@ -120,6 +120,7 @@ class AttributeHelper
             'updatedAt' => $date,
             'uuid' => $uuid,
             'categoryId' => $categoryId,
+            'mysqlId' => null, // it's a new attribute
         ];
 
         ImportAttributes::saveAttribute($params, $pgsql);

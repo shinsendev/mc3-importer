@@ -16,7 +16,7 @@ class ImportSongs implements ImporterInterface
 {
     CONST MODEL = 'song';
 
-    static public function insert(\PDO $pgsql, array $song, \PDO $mysql)
+    static public function insert(\PDO $pgsql, array $song, \PDO $mysql, $params = []) :void
     {
         $basics = MigrationHelper::createBaseParams();
 

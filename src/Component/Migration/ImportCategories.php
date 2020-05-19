@@ -13,7 +13,7 @@ use Ramsey\Uuid\Uuid;
  */
 class ImportCategories implements ImporterInterface
 {
-    static public function insert($pgsql, $code, $mysql):void
+    static public function insert($pgsql, $code, $mysql,  $params = []):void
     {
         $uuid = Uuid::uuid4()->toString();
         $date = new \DateTime();

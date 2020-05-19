@@ -17,7 +17,13 @@ class ImportNumbers implements ImporterInterface
 {
     CONST MODEL = 'number';
 
-    static public function insert(\PDO $pgsql, array $number, \PDO $mysql)
+    /**
+     * @param \PDO $pgsql
+     * @param array $number
+     * @param \PDO $mysql
+     * @param array $params
+     */
+    static public function insert(\PDO $pgsql, array $number, \PDO $mysql, $params = []):void
     {
         $basics = MigrationHelper::createBaseParams();
 

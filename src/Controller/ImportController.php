@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Component\Migration\Helper\MigrationHelper;
+use App\Component\Migration\ImportAttributes;
 use App\Component\MySQL\Clean\MySQLClean;
 use App\Component\MySQL\Import\MySQLImport;
 use App\Component\MySQL\Initialization\MySQLInitialization;
@@ -58,6 +59,7 @@ class ImportController extends AbstractController
         MigrationHelper::importRelations('film_has_studio', 'film_studio', 'film', 'studio',1000);
 
         // import censorship
+//        ImportAttributes::importExternalThesaurusString('censorship', 'censorship', 'film_has_censorship', 'film', 1000 );
 
         // import states
 
@@ -203,6 +205,26 @@ class ImportController extends AbstractController
     public function importFilmsDistributorRelations()
     {
         MigrationHelper::importRelations('film_has_distributor', 'film_distributor', 'film', 'distributor', 1000);
+
+        return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/import/film-censorship-thesaurus", name="import_film_censorship_thesaurus")
+     */
+    public function importFilmCensorshipThesaurus()
+    {
+        ImportAttributes::importExternalThesaurusString('censorship', 'censorship', 'film_has_censorship', 'film_attribute', 'film', 1000, true );
+
+        return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/import/film-state-thesaurus", name="import_film_state_thesaurus")
+     */
+    public function importFilmStateThesaurus()
+    {
+        ImportAttributes::importExternalThesaurusString('state', 'state', 'film_has_state', 'film_attribute', 'film', 1000, true );
 
         return $this->redirectToRoute('home');
     }
