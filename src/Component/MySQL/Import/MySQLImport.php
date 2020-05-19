@@ -18,7 +18,7 @@ class MySQLImport
             return new \Error('No data in file '.$fileName);
         }
 
-        $connection = MySQLConnection::connection("127.0.0.1:8889", "root", "root", "mc2");
+        $connection = MySQLConnection::connection();
 
         // Temporary variable, used to store current query
         $tempLine = '';
@@ -43,7 +43,7 @@ class MySQLImport
                     throw new \Error($line. $e);
                 }
 
-//                // Reset temp variable to empty
+                // Reset temp variable to empty
                 $tempLine = '';
             }
         }

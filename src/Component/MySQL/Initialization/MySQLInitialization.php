@@ -12,16 +12,13 @@ class MySQLInitialization
 {
     static function init()
     {
-        $connection = MySQLConnection::connection("127.0.0.1:8889", "root", "root");
+        $connection = MySQLConnection::connection();
 
         $sql = "DROP DATABASE IF EXISTS mc2";
         $connection->query($sql);
 
         $sql = "CREATE DATABASE IF NOT EXISTS mc2";
         $connection->query($sql);
-
-        $connection = MySQLConnection::connection("127.0.0.1:8889", "root", "root", "mc2");
-
 
         return $connection;
     }

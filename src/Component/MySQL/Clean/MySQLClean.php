@@ -12,7 +12,7 @@ class MySQLClean
 {
     static function clean()
     {
-        $connection = MySQLConnection::connection("127.0.0.1:8889", "root", "root", "mc2");
+        $connection = MySQLConnection::connection();
         $sqlList = [
             'DROP TABLE IF EXISTS `stagenumber_has_costume`;',
             'DROP TABLE IF EXISTS `stagenumber_has_dancecontent`;',
@@ -60,6 +60,7 @@ class MySQLClean
             'DROP TABLE IF EXISTS `validation`;',
             'DROP TABLE IF EXISTS `number_has_generalmood`;',
             'DROP TABLE IF EXISTS `migration_versions`;',
+            'DROP TABLE IF EXISTS `film_has_director`;',
 
             'ALTER TABLE film DROP color;',
             'ALTER TABLE film DROP ratio;',
@@ -76,6 +77,8 @@ class MySQLClean
 
             'ALTER TABLE number DROP cost;',
             'ALTER TABLE number DROP cost_comment;',
+
+            'ALTER TABLE song_has_composer CHANGE composer_id person_id INT(11);',
         ];
 
         foreach ($sqlList as $sql) {
@@ -85,8 +88,6 @@ class MySQLClean
                 throw new \Error($sql. $e);
             }
         }
-
-
-
+        
     }
 }
