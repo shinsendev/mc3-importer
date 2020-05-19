@@ -115,6 +115,33 @@ class MigrationHelper
         }
         $targetId = MigrationHelper::getEntityByMySQLId($pgsql, $relation[$targetIdName], $targetType);
 
+        // we save the relation with the psql id
+        $stmt->execute(['source' => $sourceId, 'target' => $targetId]);
+    }
+
+    /**
+     * @param string $pgSQLTableName
+     * @param array $values
+     * @param string $sourceIdName
+     * @param string $targetIdName
+     * @param string $sourceType
+     * @param string $targetType
+     * @param \PDO $pgsql
+     */
+    public static function insertRelationAdvanced(
+        string $pgSQLTableName,
+        array $values,
+        string $sourceIdName,
+        string $targetIdName,
+        string $sourceType,
+        string $targetType,
+        \PDO $pgsql
+    ) : void
+    {
+        $sql = 'INSERT INTO '.$pgSQLTableName.' VALUES(:source, :target)';
+        $stmt = $pgsql->prepare($sql);
+        $sourceId = MigrationHelper::getEntityByMySQLId($pgsql, $values[$sourceIdName], $sourceType);
+        $targetId = MigrationHelper::getEntityByMySQLId($pgsql, $values[$targetIdName], $targetType);
 
         // we save the relation with the psql id
         $stmt->execute(['source' => $sourceId, 'target' => $targetId]);

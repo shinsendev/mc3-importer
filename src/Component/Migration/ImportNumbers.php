@@ -31,7 +31,7 @@ class ImportNumbers implements ImporterInterface
         // use $number['film_id']`
         $filmId = FilmHelper::findFilmByMsqlId((int)$number['film_id'], $pgsql, $mysql);
 
-        $sql = "INSERT INTO number (title, film_id, begin_tc, end_tc, shots, \"references\", uuid, created_at, updated_at) VALUES (:title, :film, :begin, :end, :shots, :references, :uuid, :createdAt, :updatedAt)";
+        $sql = "INSERT INTO number (title, film_id, begin_tc, end_tc, shots, \"references\", uuid, created_at, updated_at, mysql_id) VALUES (:title, :film, :begin, :end, :shots, :references, :uuid, :createdAt, :updatedAt, :mysqlId)";
         $rsl = $pgsql->prepare($sql);
         $rsl->execute([
             'title' => ($number['title']) ? $number['title'] : null,
@@ -42,7 +42,8 @@ class ImportNumbers implements ImporterInterface
             'references' => ($number['quotation_text']) ? $number['quotation_text'] : null,
             'createdAt' => ($number['date_creation'] && $number['last_update'] > 0) ? $number['date_creation'] : $basics['date'],
             'updatedAt' => ($number['last_update'] && $number['last_update'] > 0) ? $number['last_update'] : $basics['date'],
-            'uuid' => $basics['uuid']
+            'uuid' => $basics['uuid'],
+            'mysqlId' => $number['number_id'],
         ]);
 
         if ($number['dubbing']) {

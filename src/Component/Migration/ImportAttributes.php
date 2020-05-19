@@ -151,9 +151,53 @@ class ImportAttributes implements ImporterInterface
         }
     }
 
-
-    public static function importExternalThesaurusReferences()
+    /**
+     * @param string $mysqlTableName
+     * @param string $pgsqlTableName
+     * @param string $code
+     * @param string $model
+     * @param string $targetType
+     * @param string $sourceIdName
+     * @param string $targetIdName
+     * @param int $limit
+     */
+    public static function importRelationsForExistingAttributes(
+        string $mysqlTableName,
+        string $pgsqlTableName,
+        string $code,
+        string $model,
+        string $targetType,
+        string $sourceIdName,
+        string $targetIdName,
+        int $limit = 1000)
     {
+        // init
+        $pgsql = PostgreSQLConnection::connection();
+        $mysql = MySQLConnection::connection();
+        $basics = MigrationHelper::createBaseParams();
 
+        // we add some pagination for importing attributes
+        $iterationsCount = MigrationHelper::countIteration($mysqlTableName, $limit, $mysql);
+        $offset = 0;
+
+        // find category by code
+        $sql = ('SELECT id FROM  category WHERE code = :code');
+        $stm = $pgsql->prepare($sql);
+        $stm->execute(['code'=> $code]);
+        $categoryId = $stm->fetch()['id'];
+
+        // import new attributes in attributes table
+        for ($i = 0; $i < $iterationsCount; $i++) {
+            $sql = sprintf('SELECT * FROM ' . $mysqlTableName . ' LIMIT %d, %d', $offset, $limit);
+            $stmt = $mysql->prepare($sql);
+            $stmt->execute();
+            $relations = $stmt->fetchAll();
+
+            // the we insert the films one by one
+            foreach($relations as $relation) {
+                MigrationHelper::insertRelationAdvanced($pgsqlTableName, $relation, $sourceIdName, $targetIdName, $model, $targetType, $pgsql);
+            }
+            $offset = $offset + $limit;
+        }
     }
 }

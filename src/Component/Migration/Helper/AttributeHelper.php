@@ -56,6 +56,12 @@ class AttributeHelper
         $stm->execute($params);
     }
 
+    /**
+     * @param $thesaurus
+     * @param $psql
+     * @param $mysql
+     * @return array|null
+     */
     static function getExistingAttribute($thesaurus, $psql, $mysql): ?array
     {
         // find the corresponding postgres category

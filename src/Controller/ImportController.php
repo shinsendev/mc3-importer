@@ -228,4 +228,44 @@ class ImportController extends AbstractController
 
         return $this->redirectToRoute('home');
     }
+
+    /**
+     * @Route("/import/number-attributes", name="import_number_attributes")
+     */
+    public function importNumberAttributes()
+    {
+        // import complet_options
+        ImportAttributes::importRelationsForExistingAttributes('number_has_completoptions', 'number_attribute', 'complet_options', 'number', 'attribute', 'number_id', 'completoptions_id',  1000);
+
+        // import dancecontent
+        ImportAttributes::importRelationsForExistingAttributes('number_has_dancecontent', 'number_attribute', 'dance_content', 'number', 'attribute', 'number_id', 'dancecontent_id',  1000);
+
+        // import dancemble
+        ImportAttributes::importRelationsForExistingAttributes('number_has_dancemble', 'number_attribute', 'dancemble', 'number', 'attribute', 'number_id', 'dancemble_id',  1000);
+
+        // import dancesubgenre
+        ImportAttributes::importRelationsForExistingAttributes('number_has_dancesubgenre', 'number_attribute', 'dance_subgenre', 'number', 'attribute', 'number_id', 'dancesubgenre_id',  1000);
+
+        // dancingtype
+
+        // diegeticplace
+
+        // exoticismthesaurus
+
+        // genre => topic
+
+        // imaginary
+
+        // musensemble
+
+        // musicalthesaurus
+
+        // quotationthesaurus
+
+        // source
+
+        // stereotype
+
+        return $this->redirectToRoute('home');
+    }
 }
