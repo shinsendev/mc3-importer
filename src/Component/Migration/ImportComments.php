@@ -12,7 +12,7 @@ class ImportComments implements ImporterInterface
 {
     static public function insert(\PDO $pgsql, array $number, \PDO $mysql, array $params = []): void
     {
-        $commentsNamesList = ['comment_title', 'comment_tc', 'comment_structure', 'comment_shots', 'comment_performance', 'comment_backstage', 'comment_theme', 'comment_mood', 'comment_dance', 'comment_music', 'comment_director', 'comment_reference'];
+        $commentsNamesList = ['arranger_comment', 'comment_title', 'comment_tc', 'comment_structure', 'comment_shots', 'comment_performance', 'comment_backstage', 'comment_theme', 'comment_mood', 'comment_dance', 'comment_music', 'comment_director', 'comment_reference'];
 
         $value = '';
 

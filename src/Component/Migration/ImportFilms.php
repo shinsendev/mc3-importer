@@ -8,6 +8,7 @@ use App\Component\Migration\Helper\AttributeHelper;
 use App\Component\Migration\Helper\CategoryHelper;
 use App\Component\Migration\Helper\MigrationHelper;
 use App\Component\Migration\Helper\PersonHelper;
+use App\Component\Migration\Helper\UserHelper;
 use Ramsey\Uuid\Uuid;
 
 class ImportFilms implements ImporterInterface
@@ -42,33 +43,23 @@ class ImportFilms implements ImporterInterface
         ]);
 
         // add films attributes (todo: create an attribute list and refacto with a foreach?)
-        if ($film['adapatation']) {
-            AttributeHelper::importAttribute($film['adapatation'], 'adaptation', 'film', $pgsql, $mysql);
-        }
+        $filmAttributesList = [
+            'adapatation' => 'adaptation',
+            'verdict' => 'verdict',
+            'legion' => 'legion',
+            'protestant' => 'protestant',
+            'harrisson' => 'harrison',
+            'bord' => 'board',
+        ];
 
-        if ($film['verdict']) {
-            AttributeHelper::importAttribute($film['verdict'], 'verdict', 'film', $pgsql, $mysql);
-        }
-
-        if ($film['legion']) {
-            AttributeHelper::importAttribute($film['legion'], 'legion', 'film', $pgsql, $mysql);
-        }
-
-
-        if ($film['protestant']) {
-            AttributeHelper::importAttribute($film['protestant'], 'protestant', 'film', $pgsql, $mysql);
-        }
-
-        if ($film['harrisson']) {
-            AttributeHelper::importAttribute($film['harrisson'], 'harrison', 'film', $pgsql, $mysql);
-        }
-
-        if ($film['bord']) {
-            AttributeHelper::importAttribute($film['bord'], 'board', 'film', $pgsql, $mysql);
+        // import film attributes
+        foreach ($filmAttributesList as $index => $type) {
+            if ($value = $film[$index]) {
+                AttributeHelper::importAttribute($value, $type, 'film', $pgsql, $mysql);
+            }
         }
 
         // add persons relations, first we prepare the params
-
         $personParams['date'] = $basics['date'];
         $personParams['uuid'] = $basics['uuid'];
         $personParams['targetType'] =  self::MODEL;
@@ -80,7 +71,16 @@ class ImportFilms implements ImporterInterface
         // add producers
         PersonHelper::importLinkedPersons('film_has_producer', 'producer', $pgsql,  $mysql, $personParams);
 
-        // todo: import users
+        // import users
+        $usersParams['date'] = $basics['date'];
+        $usersParams['uuid'] = $basics['uuid'];
+        $usersParams['filmId'] = $film['film_id'];
+
+        $stm = $pgsql->prepare('SELECT currval(pg_get_serial_sequence(\'film\',\'id\')) as id');
+        $stm->execute();
+        $filmId = $stm->fetch()['id'];
+
+        UserHelper::importLinkedUsers('film_has_editor', 'film', $filmId, $usersParams, $pgsql, $mysql, $basics);
     }
 
 
