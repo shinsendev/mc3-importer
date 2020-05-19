@@ -8,6 +8,7 @@ use App\Component\Migration\Helper\AttributeHelper;
 use App\Component\Migration\Helper\FilmHelper;
 use App\Component\Migration\Helper\MigrationHelper;
 use App\Component\Migration\Helper\PersonHelper;
+use App\Component\Migration\Helper\UserHelper;
 
 /**
  * Class ImportNumbers
@@ -106,6 +107,9 @@ class ImportNumbers implements ImporterInterface
 
         // add performers
         PersonHelper::importLinkedPersons('number_has_performer', 'performer', $pgsql,  $mysql, $personParams);
+
+        // import users
+        UserHelper::importLinkedUsers('number_has_editor', 'number', 'number', $pgsql, $mysql, $basics, (int)$number['number_id']);
     }
 
 }

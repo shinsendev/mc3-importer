@@ -72,15 +72,7 @@ class ImportFilms implements ImporterInterface
         PersonHelper::importLinkedPersons('film_has_producer', 'producer', $pgsql,  $mysql, $personParams);
 
         // import users
-        $usersParams['date'] = $basics['date'];
-        $usersParams['uuid'] = $basics['uuid'];
-        $usersParams['filmId'] = $film['film_id'];
-
-        $stm = $pgsql->prepare('SELECT currval(pg_get_serial_sequence(\'film\',\'id\')) as id');
-        $stm->execute();
-        $filmId = $stm->fetch()['id'];
-
-        UserHelper::importLinkedUsers('film_has_editor', 'film', $filmId, $usersParams, $pgsql, $mysql, $basics);
+        UserHelper::importLinkedUsers('film_has_editor', 'film', 'film', $pgsql, $mysql, $basics, (int)$film['film_id']);
     }
 
 

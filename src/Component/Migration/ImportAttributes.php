@@ -7,13 +7,14 @@ namespace App\Component\Migration;
 
 use App\Component\Migration\Helper\CategoryHelper;
 use App\Component\Migration\Helper\MigrationHelper;
+use App\Component\Migration\Helper\UserHelper;
 use App\Component\MySQL\Connection\MySQLConnection;
 use App\Component\PostgreSQL\Connection\PostgreSQLConnection;
 use Ramsey\Uuid\Uuid;
 
 class ImportAttributes implements ImporterInterface
 {
-    static public function insert($psql, $thesaurus, $mysql, $params = []):void
+    static public function insert($pgsql, $thesaurus, $mysql, $params = []):void
     {
         $uuid = Uuid::uuid4()->toString();
         $date = new \DateTime();
@@ -28,7 +29,7 @@ class ImportAttributes implements ImporterInterface
         $code = $rsl->fetch()['content'];
 
         // get the category id in PostgreSQL db
-        $rsl = $psql->prepare('SELECT id FROM category WHERE code = :code');
+        $rsl = $pgsql->prepare('SELECT id FROM category WHERE code = :code');
         $rsl->execute(['code' => $code]);
         $categoryId = $rsl->fetch()['id'];
 
@@ -45,9 +46,13 @@ class ImportAttributes implements ImporterInterface
         ];
 
         // insert data into PostgreSQL attribute table
-        self::saveAttribute($params, $psql);
+        self::saveAttribute($params, $pgsql);
 
         //todo : add comment
+
+        // import users
+        $basics = MigrationHelper::createBaseParams();
+        UserHelper::importLinkedUsers('thesaurus_has_editor', 'attribute', 'thesaurus', $pgsql, $mysql, $basics, (int)$thesaurus['thesaurus_id']);
     }
 
     /**
@@ -184,7 +189,7 @@ class ImportAttributes implements ImporterInterface
         $sql = ('SELECT id FROM  category WHERE code = :code');
         $stm = $pgsql->prepare($sql);
         $stm->execute(['code'=> $code]);
-        $categoryId = $stm->fetch()['id'];
+        $categoryId = $stm->fetch()['id']; // useless?
 
         // import new attributes in attributes table
         for ($i = 0; $i < $iterationsCount; $i++) {

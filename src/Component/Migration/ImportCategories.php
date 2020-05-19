@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Component\Migration;
 
 use App\Component\Migration\Helper\CategoryHelper;
+use App\Component\Migration\Helper\MigrationHelper;
+use App\Component\Migration\Helper\UserHelper;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -31,6 +33,10 @@ class ImportCategories implements ImporterInterface
         ];
 
         CategoryHelper::insertCategory($params, $pgsql);
+
+        // import users
+        $basics = MigrationHelper::createBaseParams();
+        UserHelper::importLinkedUsers('code_has_editor', 'category', 'code', $pgsql, $mysql, $basics, (int)$code['code_id']);
     }
 
 }

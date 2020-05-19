@@ -7,6 +7,7 @@ namespace App\Component\Migration;
 
 use App\Component\Migration\Helper\MigrationHelper;
 use App\Component\Migration\Helper\PersonHelper;
+use App\Component\Migration\Helper\UserHelper;
 
 /**
  * Class ImportSong
@@ -43,6 +44,9 @@ class ImportSongs implements ImporterInterface
 
         // add lyricist
         PersonHelper::importLinkedPersons('song_has_lyricist', 'lyricist', $pgsql,  $mysql, $personParams);
+
+        // import users
+        UserHelper::importLinkedUsers('song_has_editor', 'song', 'song', $pgsql, $mysql, $basics, (int)$song['song_id']);
     }
 
 }

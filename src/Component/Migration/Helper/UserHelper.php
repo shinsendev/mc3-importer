@@ -8,12 +8,28 @@ namespace App\Component\Migration\Helper;
 
 class UserHelper
 {
-    public static function importLinkedUsers(string $mySQLTable, string $pgSQLTable, int $itemIdToUpdate, array $params, \PDO $pgsql, \PDO $mysql, array $basics):void
+    public static function importLinkedUsers(
+        string $mySQLTable,
+        string $pgSQLTable,
+        string $model,
+        \PDO $pgsql,
+        \PDO $mysql,
+        array $basics,
+        int $mysqlItemId):void
     {
-        $sql = 'SELECT * FROM '.$mySQLTable.' WHERE  film_id = :filmId';
+        $usersParams['date'] = $basics['date'];
+        $usersParams['uuid'] = $basics['uuid'];
+        $usersParams['id'] = $mysqlItemId;
+
+        // get last item
+        $stm = $pgsql->prepare('SELECT currval(pg_get_serial_sequence(\''.$pgSQLTable.'\',\'id\')) as id');
+        $stm->execute();
+        $itemIdToUpdate = $stm->fetch()['id'];
+
+        $sql = 'SELECT * FROM '.$mySQLTable.' WHERE  '.$model.'_id = :id';
         $stm = $mysql->prepare($sql);
         $stm->execute([
-            'filmId' => $params['filmId']
+            'id' => $mysqlItemId
         ]);
         $relations = $stm->fetchAll();
 

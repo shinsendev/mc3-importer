@@ -7,6 +7,7 @@ namespace App\Component\Migration;
 
 
 use App\Component\Migration\Helper\MigrationHelper;
+use App\Component\Migration\Helper\UserHelper;
 
 class ImportPersons implements ImporterInterface
 {
@@ -47,5 +48,8 @@ class ImportPersons implements ImporterInterface
             'uuid' => $basics['uuid'],
             'mysqlId' => $person['person_id'],
         ]);
+
+        // import users
+        UserHelper::importLinkedUsers('person_has_editor', 'person', 'person', $pgsql, $mysql, $basics, (int)$person['person_id']);
     }
 }
