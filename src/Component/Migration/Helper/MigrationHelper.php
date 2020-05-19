@@ -70,14 +70,13 @@ class MigrationHelper
     {
         // connect to PostgreSQL and insert the usefull data of the list
         $pgsql = PostgreSQLConnection::connection();
+        $mysql = MySQLConnection::connection();
 
         // count number of iterations for import
-        $iterationsCount = self::countIteration();
+        $iterationsCount = self::countIteration($mySQLTableName, $limit, $mysql);
 
         // save all films bulks
         $offset = 0;
-
-        $mysql = MySQLConnection::connection();
 
         for ($i = 0; $i < $iterationsCount; $i++) {
             $sql = sprintf('SELECT * FROM '.$mySQLTableName.' LIMIT %d, %d', $offset, $limit);
@@ -114,8 +113,10 @@ class MigrationHelper
         if ($isThesaurus) {
             $targetType = 'attribute';
         }
-
         $targetId = MigrationHelper::getEntityByMySQLId($pgsql, $relation[$targetIdName], $targetType);
+
+
+        // we save the relation with the psql id
         $stmt->execute(['source' => $sourceId, 'target' => $targetId]);
     }
 
