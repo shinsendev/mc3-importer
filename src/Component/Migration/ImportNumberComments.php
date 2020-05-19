@@ -8,7 +8,7 @@ namespace App\Component\Migration;
 
 use App\Component\Migration\Helper\MigrationHelper;
 
-class ImportComments implements ImporterInterface
+class ImportNumberComments implements ImporterInterface
 {
     static public function insert(\PDO $pgsql, array $number, \PDO $mysql, array $params = []): void
     {

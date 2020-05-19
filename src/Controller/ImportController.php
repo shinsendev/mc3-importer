@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Component\Migration\Helper\MigrationHelper;
 use App\Component\Migration\ImportAttributes;
-use App\Component\Migration\ImportComments;
 use App\Component\MySQL\Clean\MySQLClean;
 use App\Component\MySQL\Import\MySQLImport;
 use App\Component\MySQL\Initialization\MySQLInitialization;
@@ -108,6 +107,12 @@ class ImportController extends AbstractController
 
         // stereotype
         ImportAttributes::importRelationsForExistingAttributes('number_has_stereotype', 'number_attribute', 'stereotype_thesaurus', 'number', 'attribute', 'number_id', 'stereotype_id',  1000);
+
+        // numbers
+        MigrationHelper::importAll('number','App\Component\Migration\ImportNumberComments::insert', 500);
+
+        // thesaurus
+        MigrationHelper::importAll('thesaurus','App\Component\Migration\ImportThesaurusComments::insert', 500);
 
         $this->addFlash('success', 'Everything is ok');
         return $this->redirectToRoute('home');
@@ -330,8 +335,11 @@ class ImportController extends AbstractController
      */
     public function importComments()
     {
-        // only numbers have comments, we parse the comments
-        MigrationHelper::importAll('number','App\Component\Migration\ImportComments::insert', 500);
+        // numbers
+        MigrationHelper::importAll('number','App\Component\Migration\ImportNumberComments::insert', 500);
+
+        // thesaurus
+        MigrationHelper::importAll('thesaurus','App\Component\Migration\ImportThesaurusComments::insert', 500);
 
         return $this->redirectToRoute('home');
     }
