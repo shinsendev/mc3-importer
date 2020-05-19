@@ -25,7 +25,7 @@ class ImportStudios implements ImporterInterface
      */
     static public function writeSQL():string
     {
-        return "INSERT INTO studio (name, uuid, created_at, updated_at) VALUES (:name, :uuid, :createdAt, :updatedAt)";
+        return "INSERT INTO studio (name, uuid, created_at, updated_at, mysql_id) VALUES (:name, :uuid, :createdAt, :updatedAt, :mysqlId)";
     }
 
     /**
@@ -41,7 +41,8 @@ class ImportStudios implements ImporterInterface
             'name' => $studio['title'],
             'createdAt' => ($studio['date_creation'] && $studio['date_creation'] > 0) ? $studio['date_creation'] : $basics['date'],
             'updatedAt' => ($studio['last_update'] && $studio['last_update'] > 0) ? $studio['last_update'] : $basics['date'],
-            'uuid' => $basics['uuid']
+            'uuid' => $basics['uuid'],
+            'mysqlId' =>  $studio['studio_id']
         ];
     }
 

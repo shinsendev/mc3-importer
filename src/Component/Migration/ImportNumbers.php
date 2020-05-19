@@ -7,6 +7,7 @@ namespace App\Component\Migration;
 use App\Component\Migration\Helper\AttributeHelper;
 use App\Component\Migration\Helper\FilmHelper;
 use App\Component\Migration\Helper\MigrationHelper;
+use App\Component\Migration\Helper\PersonHelper;
 
 /**
  * Class ImportNumbers
@@ -14,15 +15,17 @@ use App\Component\Migration\Helper\MigrationHelper;
  */
 class ImportNumbers implements ImporterInterface
 {
+    CONST MODEL = 'number';
+
     static public function insert(\PDO $pgsql, array $number, \PDO $mysql)
     {
         $basics = MigrationHelper::createBaseParams();
 
         // get Film id by using sql Film id
-        // use $number['film_id']
+        // use $number['film_id']`
         $filmId = FilmHelper::findFilmByMsqlId((int)$number['film_id'], $pgsql, $mysql);
 
-        $sql = "INSERT INTO number (title, film_id, begin_tc, end_tc, shots, quotation, uuid, created_at, updated_at) VALUES (:title, :film, :begin, :end, :shots, :references, :uuid, :createdAt, :updatedAt)";
+        $sql = "INSERT INTO number (title, film_id, begin_tc, end_tc, shots, \"references\", uuid, created_at, updated_at) VALUES (:title, :film, :begin, :end, :shots, :references, :uuid, :createdAt, :updatedAt)";
         $rsl = $pgsql->prepare($sql);
         $rsl->execute([
             'title' => ($number['title']) ? $number['title'] : null,
@@ -75,6 +78,28 @@ class ImportNumbers implements ImporterInterface
         if ($number['cast_id']) {
             AttributeHelper::importAttribute($number['cast_id'], 'cast', 'number', $pgsql, $mysql);
         }
+
+        // add persons relations
+
+        $personParams['date'] = $basics['date'];
+        $personParams['uuid'] = $basics['uuid'];
+        $personParams['targetType'] =  self::MODEL;
+        $personParams['targetMySQLId'] =  $number['number_id'];
+
+        // add arrangers
+        PersonHelper::importLinkedPersons('number_has_arranger', 'arranger', $pgsql,  $mysql, $personParams);
+
+        // add choregraphs
+        PersonHelper::importLinkedPersons('number_has_choregraph', 'choregraph', $pgsql,  $mysql, $personParams);
+
+        // add directors
+        PersonHelper::importLinkedPersons('number_has_director', 'director', $pgsql,  $mysql, $personParams);
+
+        // add figurants
+        PersonHelper::importLinkedPersons('number_has_figurant', 'figurant', $pgsql,  $mysql, $personParams);
+
+        // add performers
+        PersonHelper::importLinkedPersons('number_has_performer', 'performer', $pgsql,  $mysql, $personParams);
     }
 
 }

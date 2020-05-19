@@ -77,6 +77,8 @@ class MySQLClean
 
             'ALTER TABLE number DROP cost;',
             'ALTER TABLE number DROP cost_comment;',
+
+            'ALTER TABLE song_has_composer CHANGE composer_id person_id INT(11);',
         ];
 
         foreach ($sqlList as $sql) {
@@ -86,8 +88,6 @@ class MySQLClean
                 throw new \Error($sql. $e);
             }
         }
-
-
-
+        
     }
 }

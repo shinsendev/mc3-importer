@@ -19,7 +19,7 @@ class ImportDistributors implements ImporterInterface
      */
     static public function writeSQL():string
     {
-        return "INSERT INTO distributor (name, uuid, created_at, updated_at) VALUES (:name, :uuid, :createdAt, :updatedAt)";
+        return "INSERT INTO distributor (name, uuid, created_at, updated_at, mysql_id) VALUES (:name, :uuid, :createdAt, :updatedAt, :mysqlId)";
     }
 
     /**
@@ -35,7 +35,8 @@ class ImportDistributors implements ImporterInterface
             'name' => $distributor['title'],
             'createdAt' => ($distributor['date_creation'] && $distributor['date_creation'] > 0) ? $distributor['date_creation'] : $basics['date'],
             'updatedAt' => ($distributor['last_update'] && $distributor['last_update'] > 0) ? $distributor['last_update'] : $basics['date'],
-            'uuid' => $basics['uuid']
+            'uuid' => $basics['uuid'],
+            'mysqlId' =>  $distributor['distributor_id']
         ];
     }
 

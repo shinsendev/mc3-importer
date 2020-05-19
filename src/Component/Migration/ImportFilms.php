@@ -77,8 +77,8 @@ class ImportFilms implements ImporterInterface
         PersonHelper::importLinkedPersons('film_has_producer', 'producer', $pgsql,  $mysql, $personParams);
 
 
+        // todo:import links state & censorship
 
-
-        //todo:import links with persons + state & censorship
+        // todo: import users
     }
 }

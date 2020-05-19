@@ -25,11 +25,16 @@ class ImportController extends AbstractController
         MySQLImport::import('../data/mc2.sql');
         MySQLClean::clean();
 
+        // import all users
+        MigrationHelper::importAll('fos_user', 'App\Component\Migration\ImportUsers::insert', 500);
+
         // import categories (from code)
         MigrationHelper::importAll('code', 'App\Component\Migration\ImportCategories::insert', 500);
 
         // import attributes with categories (from thesaurus)
         MigrationHelper::importAll('thesaurus', 'App\Component\Migration\ImportAttributes::insert', 500);
+        // import all persons
+        MigrationHelper::importAll('person', 'App\Component\Migration\ImportPersons::insert', 500);
 
         // import films
         MigrationHelper::importAll('film', 'App\Component\Migration\ImportFilms::insert', 500);
@@ -40,12 +45,21 @@ class ImportController extends AbstractController
         // import songs
         MigrationHelper::importAll('song', 'App\Component\Migration\ImportSongs::insert', 500);
 
-        // import all persons
+        // import all distributors
+        MigrationHelper::importAll('distributor', 'App\Component\Migration\ImportDistributors::insert', 500);
 
-        // import all distributor
+        // import all studios
+        MigrationHelper::importAll('studio', 'App\Component\Migration\ImportStudios::insert', 500);
 
-        // import all studio
+        // import films distributors links
+        MigrationHelper::importRelations('film_has_distributor', 'film_distributor', 'film', 'distributor',1000);
 
+        // import films studios links
+        MigrationHelper::importRelations('film_has_studio', 'film_studio', 'film', 'studio',1000);
+
+        // import censorship
+
+        // import states
 
         $this->addFlash('success', 'Everything is ok');
         return $this->redirectToRoute('home');
@@ -158,7 +172,7 @@ class ImportController extends AbstractController
      */
     public function importDistributors()
     {
-        MigrationHelper::importAll('studio', 'App\Component\Migration\ImportDistributors::insert', 500);
+        MigrationHelper::importAll('distributor', 'App\Component\Migration\ImportDistributors::insert', 500);
 
         return $this->redirectToRoute('home');
     }
@@ -169,6 +183,26 @@ class ImportController extends AbstractController
     public function importUsers()
     {
         MigrationHelper::importAll('fos_user', 'App\Component\Migration\ImportUsers::insert', 500);
+
+        return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/import/film-studio-relations", name="import_film_studio_relations")
+     */
+    public function importFilmsStudioRelations()
+    {
+        MigrationHelper::importRelations('film_has_studio', 'film_studio', 'film', 'studio',1000);
+
+        return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/import/film-distributor-relations", name="import_film_distributor_relations")
+     */
+    public function importFilmsDistributorRelations()
+    {
+        MigrationHelper::importRelations('film_has_distributor', 'film_distributor', 'film', 'distributor', 1000);
 
         return $this->redirectToRoute('home');
     }
