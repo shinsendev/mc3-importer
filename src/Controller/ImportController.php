@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Component\Migration\Helper\MigrationHelper;
 use App\Component\Migration\ImportAttributes;
+use App\Component\Migration\ImportComments;
 use App\Component\MySQL\Clean\MySQLClean;
 use App\Component\MySQL\Import\MySQLImport;
 use App\Component\MySQL\Initialization\MySQLInitialization;
@@ -59,7 +60,7 @@ class ImportController extends AbstractController
         MigrationHelper::importRelations('film_has_studio', 'film_studio', 'film', 'studio',1000);
 
         // import censorship
-        ImportAttributes::importExternalThesaurusString('state', 'state', 'film_has_state', 'film_attribute', 'film', 1000, true );
+        ImportAttributes::importExternalThesaurusString('censorship', 'censorship', 'film_has_censorship', 'film_attribute', 'film', 1000, true );
 
         // import states
         ImportAttributes::importExternalThesaurusString('state', 'state', 'film_has_state', 'film_attribute', 'film', 1000, true );
@@ -320,6 +321,17 @@ class ImportController extends AbstractController
 
         // stereotype
         ImportAttributes::importRelationsForExistingAttributes('number_has_stereotype', 'number_attribute', 'stereotype_thesaurus', 'number', 'attribute', 'number_id', 'stereotype_id',  1000);
+
+        return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/import/comments", name="import_comments")
+     */
+    public function importComments()
+    {
+        // only numbers have comments, we parse the comments
+        MigrationHelper::importAll('number','App\Component\Migration\ImportComments::insert', 500);
 
         return $this->redirectToRoute('home');
     }

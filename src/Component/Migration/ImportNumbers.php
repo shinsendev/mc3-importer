@@ -87,7 +87,6 @@ class ImportNumbers implements ImporterInterface
         }
 
         // add persons relations
-
         $personParams['date'] = $basics['date'];
         $personParams['uuid'] = $basics['uuid'];
         $personParams['targetType'] =  self::MODEL;
