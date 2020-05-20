@@ -114,6 +114,9 @@ class ImportController extends AbstractController
         // thesaurus
         MigrationHelper::importAll('thesaurus','App\Component\Migration\ImportThesaurusComments::insert', 500);
 
+        // songs numbers relations
+        MigrationHelper::importRelations('number_has_song', 'number_song', 'number', 'song',1000);
+
         $this->addFlash('success', 'Everything is ok');
         return $this->redirectToRoute('home');
     }
@@ -340,6 +343,16 @@ class ImportController extends AbstractController
 
         // thesaurus
         MigrationHelper::importAll('thesaurus','App\Component\Migration\ImportThesaurusComments::insert', 500);
+
+        return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/import/song-number", name="import_song_number_relations")
+     */
+    public function importSongNumberRelations()
+    {
+        MigrationHelper::importRelations('number_has_song', 'number_song', 'number', 'song',1000);
 
         return $this->redirectToRoute('home');
     }
