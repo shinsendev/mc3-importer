@@ -119,7 +119,7 @@ class ImportAttributes implements ImporterInterface
             $stmt->execute();
             $attributes = $stmt->fetchAll();
 
-            // the we insert the films one by one
+            // then we create a new attribute one by one
             foreach($attributes as $attribute) {
                 $attributeIdName = $categoryTitle.'_id';
                 $params = [
@@ -128,7 +128,7 @@ class ImportAttributes implements ImporterInterface
                     'example' =>  null,
                     'createdAt' => ($attribute['date_creation'] && $attribute['date_creation'] > 0 ) ? $attribute['date_creation'] : $basics['date'],
                     'updatedAt' => ($attribute['last_update'] && $attribute['date_creation'] > 0) ? $attribute['last_update'] : $basics['date'],
-                    'uuid' => $basics['uuid'],
+                    'uuid' => Uuid::uuid4()->toString(), // we create a new uuid for each attribute
                     'categoryId' => $categoryId,
                     'mysqlId' => $attribute[$attributeIdName]
                 ];
