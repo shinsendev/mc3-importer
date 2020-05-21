@@ -32,7 +32,7 @@ class ImportNumbers implements ImporterInterface
         // use $number['film_id']`
         $filmId = FilmHelper::findFilmByMsqlId((int)$number['film_id'], $pgsql, $mysql);
 
-        $sql = "INSERT INTO number (title, film_id, begin_tc, end_tc, shots, \"references\", uuid, created_at, updated_at, mysql_id) VALUES (:title, :film, :begin, :end, :shots, :references, :uuid, :createdAt, :updatedAt, :mysqlId)";
+        $sql = "INSERT INTO number (title, film_id, begin_tc, end_tc, shots, \"references\", uuid, created_at, updated_at, mysql_id, dubbing) VALUES (:title, :film, :begin, :end, :shots, :references, :uuid, :createdAt, :updatedAt, :mysqlId, :dubbing)";
         $rsl = $pgsql->prepare($sql);
         $rsl->execute([
             'title' => ($number['title']) ? $number['title'] : null,
@@ -45,11 +45,8 @@ class ImportNumbers implements ImporterInterface
             'updatedAt' => ($number['last_update'] && $number['last_update'] > 0) ? $number['last_update'] : $basics['date'],
             'uuid' => $basics['uuid'],
             'mysqlId' => $number['number_id'],
+            'dubbing' => ($number['dubbing']) ? $number['dubbing'] : null,
         ]);
-
-        if ($number['dubbing']) {
-            AttributeHelper::importAttribute($number['dubbing'], 'dubbing', 'number', $pgsql, $mysql);
-        }
 
         if ($number['structure_id']) {
             AttributeHelper::importAttribute($number['structure_id'], 'structure', 'number', $pgsql, $mysql);
