@@ -21,6 +21,8 @@ class ImportController extends AbstractController
      */
     public function all()
     {
+        set_time_limit(300);
+
         // prepare import by building mc2 MySQL database
         MySQLInitialization::init();
         MySQLImport::import('../data/mc2.sql');
