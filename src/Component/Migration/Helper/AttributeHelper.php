@@ -16,19 +16,25 @@ use Ramsey\Uuid\Uuid;
 class AttributeHelper
 {
     /**
-     * @param $thesaurusId
-     * @param string $name
+     * @param string $thesaurusId
+     * @param string $categoryName
      * @param string $modelType
      * @param \PDO $psql
      * @param \PDO $mysql
      */
-    public static function importAttribute(string $thesaurusValue, string $categoryName, string $modelType, \PDO $psql, \PDO $mysql)
+    public static function importAttribute(
+        string $thesaurusId,
+        string $categoryName,
+        string $modelType,
+        \PDO $psql,
+        \PDO $mysql
+    )
     {
         // first we get or create the attribute
 
         // we try to get the attribute
         $stm = $mysql->prepare('SELECT * FROM thesaurus WHERE thesaurus_id = :thesaurusId');
-        $stm->execute(['thesaurusId' => $thesaurusValue]);
+        $stm->execute(['thesaurusId' => $thesaurusId]);
 
         // if there is a result, that means we extract the corresponding thesaurus row in mysql in $attribute
         if ($thesaurus = $stm->fetch()) {
@@ -36,7 +42,7 @@ class AttributeHelper
         }
         // if there is no attribute corresponding we need to create a new attribute
         else {
-            $attribute = self::createAttribute($thesaurusValue, $categoryName, $modelType, $psql, $mysql);
+            $attribute = self::createAttribute($thesaurusId, $categoryName, $modelType, $psql, $mysql);
         }
 
         // then we import the relationship

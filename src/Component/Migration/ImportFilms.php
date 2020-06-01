@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Component\Migration;
 
 use App\Component\Migration\Helper\AttributeHelper;
-use App\Component\Migration\Helper\CategoryHelper;
 use App\Component\Migration\Helper\MigrationHelper;
 use App\Component\Migration\Helper\PersonHelper;
 use App\Component\Migration\Helper\UserHelper;
-use Ramsey\Uuid\Uuid;
 
 class ImportFilms implements ImporterInterface
 {
@@ -42,7 +40,7 @@ class ImportFilms implements ImporterInterface
             'mysqlId' => $film['film_id'],
         ]);
 
-        // add films attributes (todo: create an attribute list and refacto with a foreach?)
+        // add films attributes
         $filmAttributesList = [
             'adapatation' => 'adaptation',
             'verdict' => 'verdict',

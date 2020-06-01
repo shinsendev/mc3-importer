@@ -21,6 +21,8 @@ class ImportController extends AbstractController
      */
     public function all()
     {
+        set_time_limit(300);
+
         // prepare import by building mc2 MySQL database
         MySQLInitialization::init();
         MySQLImport::import('../data/mc2.sql');
@@ -28,23 +30,32 @@ class ImportController extends AbstractController
 
         // import all users
         MigrationHelper::importAll('fos_user', 'App\Component\Migration\ImportUsers::insert', 500);
+        $this->addFlash('success', 'Users imported!');
 
         // import categories (from code)
         MigrationHelper::importAll('code', 'App\Component\Migration\ImportCategories::insert', 500);
+        $this->addFlash('success', 'Categories imported!');
 
         // import attributes with categories (from thesaurus)
         MigrationHelper::importAll('thesaurus', 'App\Component\Migration\ImportAttributes::insert', 500);
+        $this->addFlash('success', 'Attributes imported!');
+
         // import all persons
         MigrationHelper::importAll('person', 'App\Component\Migration\ImportPersons::insert', 500);
+        $this->addFlash('success', 'Persons imported!');
 
         // import films
         MigrationHelper::importAll('film', 'App\Component\Migration\ImportFilms::insert', 500);
+        $this->addFlash('success', 'Films imported!');
 
         // import numbers
         MigrationHelper::importAll('number', 'App\Component\Migration\ImportNumbers::insert', 500);
+        $this->addFlash('success', 'Numbers imported!');
 
         // import songs
         MigrationHelper::importAll('song', 'App\Component\Migration\ImportSongs::insert', 500);
+        $this->addFlash('success', 'Songs imported!');
+
 
         // import all distributors
         MigrationHelper::importAll('distributor', 'App\Component\Migration\ImportDistributors::insert', 500);
@@ -116,6 +127,11 @@ class ImportController extends AbstractController
 
         // songs numbers relations
         MigrationHelper::importRelations('number_has_song', 'number_song', 'number', 'song',1000);
+
+        // songs attributes relations
+        ImportAttributes::importRelationsForExistingAttributes('song_has_songtype', 'song_attribute', 'songtype', 'song', 'attribute', 'song_id', 'songtype_id',  1000);
+
+        MySQLClean::finish();
 
         $this->addFlash('success', 'Everything is ok');
         return $this->redirectToRoute('home');
@@ -353,6 +369,16 @@ class ImportController extends AbstractController
     public function importSongNumberRelations()
     {
         MigrationHelper::importRelations('number_has_song', 'number_song', 'number', 'song',1000);
+
+        return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/import/song-attributes", name="import_song_attributes")
+     */
+    public function importSongAttributes()
+    {
+        ImportAttributes::importRelationsForExistingAttributes('song_has_songtype', 'song_attribute', 'songtype', 'song', 'attribute', 'song_id', 'songtype_id',  1000);
 
         return $this->redirectToRoute('home');
     }
