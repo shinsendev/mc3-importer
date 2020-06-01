@@ -7,11 +7,36 @@ namespace App\Component\MySQL\Clean;
 
 
 use App\Component\MySQL\Connection\MySQLConnection;
+use App\Component\PostgreSQL\Connection\PostgreSQLConnection;
 
 class MySQLClean
 {
     static function clean()
     {
+        $pgsqlConnection = PostgreSQLConnection::connection();
+
+        $sqlList = [
+            'DELETE FROM "user"',
+            'DELETE FROM attribute',
+            'DELETE FROM category',
+            'DELETE FROM work',
+            'DELETE FROM person',
+            'DELETE FROM number',
+            'DELETE FROM film',
+            'DELETE FROM distributor',
+            'DELETE FROM studio',
+            'DELETE FROM song',
+            'DELETE FROM comment',
+        ];
+
+        foreach ($sqlList as $sql) {
+            try {
+                $pgsqlConnection->query($sql);
+            } catch (\PDOException $e) {
+                throw new \Error($sql. $e);
+            }
+        }
+
         $connection = MySQLConnection::connection();
         $sqlList = [
             'DROP TABLE IF EXISTS `stagenumber_has_costume`;',
@@ -88,6 +113,59 @@ class MySQLClean
                 throw new \Error($sql. $e);
             }
         }
-        
+    }
+
+    public static function finish()
+    {
+        $connection = PostgreSQLConnection::connection();
+        // todo remove all mysql id
+
+        // update all categories models
+        $sqlList = [
+            "UPDATE category SET model = 'song' WHERE code = 'songtype'",
+            "UPDATE category SET model = 'number' WHERE code = 'begin_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'completeness_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'complet_options'",
+            "UPDATE category SET model = 'number' WHERE code = 'costumes'; -- to delete",
+            "UPDATE category SET model = 'number' WHERE code = 'dancemble';",
+            "UPDATE category SET model = 'number' WHERE code = 'diegetic_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'diegetic_place_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'ending_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'stereotype'",
+            "UPDATE category SET model = 'number' WHERE code = 'exoticism_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'general_localisation'; -- to delete",
+            "UPDATE category SET model = 'number' WHERE code = 'imaginary'",
+            "UPDATE category SET model = 'number' WHERE code = 'musensemble'",
+            "UPDATE category SET model = 'number' WHERE code = 'musical_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'musician_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'performance_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'quotation_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'source_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'spectators_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'structure'",
+            "UPDATE category SET model = 'number' WHERE code = 'tempo_thesaurus'",
+            "UPDATE category SET model = 'number' WHERE code = 'general_mood'; -- to delete",
+            "UPDATE category SET model = 'number' WHERE code = 'genre';",
+            "UPDATE category SET model = 'number' WHERE code = 'dancing_type';",
+            "UPDATE category SET model = 'number' WHERE code = 'dance_subgenre';",
+            "UPDATE category SET model = 'number' WHERE code = 'dance_content';",
+            "UPDATE category SET model = 'film' WHERE code = 'cast';",
+            "UPDATE category SET model = 'film' WHERE code = 'adaptation';",
+            "UPDATE category SET model = 'film' WHERE code = 'legion';",
+            "UPDATE category SET model = 'film' WHERE code = 'verdict';",
+            "UPDATE category SET model = 'film' WHERE code = 'protestant';",
+            "UPDATE category SET model = 'film' WHERE code = 'harrison';",
+            "UPDATE category SET model = 'film' WHERE code = 'board';",
+            "UPDATE category SET model = 'film' WHERE code = 'censorship';",
+            "UPDATE category SET model = 'film' WHERE code = 'state';",
+        ];
+
+        foreach ($sqlList as $sql) {
+            try {
+                $connection->query($sql);
+            } catch (\PDOException $e) {
+                throw new \Error($sql . $e);
+            }
+        }
     }
 }
