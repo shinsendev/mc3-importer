@@ -149,7 +149,7 @@ class MySQLClean
             "UPDATE category SET model = 'number' WHERE code = 'dancing_type';",
             "UPDATE category SET model = 'number' WHERE code = 'dance_subgenre';",
             "UPDATE category SET model = 'number' WHERE code = 'dance_content';",
-            "UPDATE category SET model = 'film' WHERE code = 'cast';",
+            "UPDATE category SET model = 'number' WHERE code = 'cast';",
             "UPDATE category SET model = 'film' WHERE code = 'adaptation';",
             "UPDATE category SET model = 'film' WHERE code = 'legion';",
             "UPDATE category SET model = 'film' WHERE code = 'verdict';",
@@ -158,6 +158,10 @@ class MySQLClean
             "UPDATE category SET model = 'film' WHERE code = 'board';",
             "UPDATE category SET model = 'film' WHERE code = 'censorship';",
             "UPDATE category SET model = 'film' WHERE code = 'state';",
+            "DELETE FROM attribute WHERE category_id IN (SELECT id FROM category WHERE code = 'costumes' OR code = 'general_localisation' OR code = 'general_localisation');",
+            "DELETE FROM category WHERE code = 'costumes';",
+            "DELETE FROM category WHERE code = 'general_mood';",
+            "DELETE FROM category WHERE code = 'general_localisation';",
         ];
 
         foreach ($sqlList as $sql) {
