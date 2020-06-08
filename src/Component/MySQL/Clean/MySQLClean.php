@@ -158,7 +158,7 @@ class MySQLClean
             "UPDATE category SET model = 'film' WHERE code = 'board';",
             "UPDATE category SET model = 'film' WHERE code = 'censorship';",
             "UPDATE category SET model = 'film' WHERE code = 'state';",
-            "DELETE FROM attribute WHERE category_id IN (SELECT id FROM category WHERE code = 'costumes' OR code = 'general_localisation' OR code = 'general_localisation');",
+            "DELETE FROM attribute WHERE category_id IN (SELECT id FROM category WHERE code = 'costumes' OR code = 'general_mood' OR code = 'general_localisation');",
             "DELETE FROM category WHERE code = 'costumes';",
             "DELETE FROM category WHERE code = 'general_mood';",
             "DELETE FROM category WHERE code = 'general_localisation';",
