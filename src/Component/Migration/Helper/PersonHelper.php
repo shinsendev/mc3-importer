@@ -28,9 +28,9 @@ class PersonHelper
                 $rsl->execute([
                     'mysqlId' => $result['person_id']
                 ]);
-                $personId = $rsl->fetch()['id'];
+                $person = $rsl->fetch();
 
-                if(!$personId) {
+                if(!isset($person['id'])) {
                     // if there is no result, it's a MysSQL DB error, we can skip the association
                     return;
                 }
@@ -38,7 +38,7 @@ class PersonHelper
                 $sql = "INSERT INTO work (person_id, target_uuid, target_type, created_at, profession) VALUES (:personId, :targetUuid, :targetType, :createdAt, :profession)";
                 $rsl = $pgsql->prepare($sql);
                 $rsl->execute([
-                    'personId' => $personId,
+                    'personId' => $person['id'],
                     'targetUuid' => $params['uuid'],
                     'targetType' => $params['targetType'],
                     'createdAt' => $params['date'],

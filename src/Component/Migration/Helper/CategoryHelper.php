@@ -28,7 +28,13 @@ class CategoryHelper
         $rsl->execute(['code' => $code]);
 
         // return psql category id
-        return $rsl->fetch()['id'];
+        if ($result = $rsl->fetch()) {
+            if (isset($result['id'])) {
+                return $result['id'];
+            }
+        }
+
+        return null;
     }
 
     /**

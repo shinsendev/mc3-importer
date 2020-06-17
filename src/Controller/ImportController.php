@@ -56,7 +56,6 @@ class ImportController extends AbstractController
         MigrationHelper::importAll('song', 'App\Component\Migration\ImportSongs::insert', 500);
         $this->addFlash('success', 'Songs imported!');
 
-
         // import all distributors
         MigrationHelper::importAll('distributor', 'App\Component\Migration\ImportDistributors::insert', 500);
 

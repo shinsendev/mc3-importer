@@ -105,8 +105,10 @@ class ImportAttributes implements ImporterInterface
         ];
         CategoryHelper::insertCategory($params, $pgsql);
 
-        // get the new created categoryId
-        $categoryId = CategoryHelper::getCategory($categoryTitle, $model, $pgsql);;
+        //get the new created categoryId, if no categoryId, throw an error
+         if (!$categoryId = CategoryHelper::getCategory($categoryTitle, $model, $pgsql)) {
+          throw new \Error('No category id found during importExternalThesaurusString');
+        }
 
         // we add some pagination for importing attributes
         $iterationsCount = MigrationHelper::countIteration($mysqlTableName, $limit, $mysql);
@@ -189,7 +191,6 @@ class ImportAttributes implements ImporterInterface
         $sql = ('SELECT id FROM  category WHERE code = :code');
         $stm = $pgsql->prepare($sql);
         $stm->execute(['code'=> $code]);
-        $categoryId = $stm->fetch()['id']; // useless?
 
         // import new attributes in attributes table
         for ($i = 0; $i < $iterationsCount; $i++) {
