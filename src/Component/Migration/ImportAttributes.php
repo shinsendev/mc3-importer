@@ -189,7 +189,6 @@ class ImportAttributes implements ImporterInterface
         $sql = ('SELECT id FROM  category WHERE code = :code');
         $stm = $pgsql->prepare($sql);
         $stm->execute(['code'=> $code]);
-        $categoryId = $stm->fetch()['id']; // useless?
 
         // import new attributes in attributes table
         for ($i = 0; $i < $iterationsCount; $i++) {

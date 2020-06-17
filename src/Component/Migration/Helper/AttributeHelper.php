@@ -119,8 +119,10 @@ class AttributeHelper
             'categoryId' => $categoryId,
         ]);
 
-        if ($result = $stm->fetch()['id']) {
-            return $result;
+        if ($result = $stm->fetch()) {
+            if (isset($result['id'])) {
+                return $result['id'];
+            }
         }
 
         // else we create a new attribute
