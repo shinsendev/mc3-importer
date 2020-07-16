@@ -39,7 +39,7 @@ class UserHelper
             $value[] = [
                 'user' => $user['name'],
                 'email' => $user['email'],
-                'uuii' => $user['uuid'],
+                'uuid' => $user['uuid'],
                 'date' => $basics['date'],
             ];
         }
