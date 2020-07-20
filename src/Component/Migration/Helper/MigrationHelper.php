@@ -284,16 +284,17 @@ class MigrationHelper
      * @param string $value
      * @return string
      */
-    public static function getBoolValue($value):string // convert boolean value into string
+    public static function getBoolValue($value):?string // convert boolean value into string
     {
-        if ($value === 1 ) {
+        if ($value == '1' ) {
             $stringValue = self::TRUE;
         }
-        else {
+        else if ($value == '0'){
             $stringValue = self::FALSE;
         }
-
-
+        else {
+            $stringValue = null;
+        }
 
         return $stringValue;
     }

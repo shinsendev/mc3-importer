@@ -31,8 +31,8 @@ class ImportFilms implements ImporterInterface
             'released' => ($film['released']) ? $film['released'] : null,
             'imdb' => ($film['id_imdb']) ? $film['id_imdb'] : null,
             'length' => ($film['length']) ? $film['length'] : null,
-            'remake' => (isset($film['remake'])) ?MigrationHelper::getBoolValue($film['remake']) : null, // use isset because if not, PHP considers 0 even in string as not existent when use if ($film['remake'])
-            'sample' => (isset($film['sample'])) ?MigrationHelper::getBoolValue($film['sample']) : null,
+            'remake' => (isset($film['remake'])) ? MigrationHelper::getBoolValue($film['remake']) : null, // use isset because if not, PHP considers 0 even in string as not existent when use if ($film['remake'])
+            'sample' => (isset($film['sample'])) ? MigrationHelper::getBoolValue($film['sample']) : null,
             'pca' => ($film['pca_texte']) ? $film['pca_texte'] : null,
             'createdAt' => $basics['date'],
             'updatedAt' => $basics['date'],
