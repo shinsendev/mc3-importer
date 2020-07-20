@@ -11,7 +11,6 @@ class PersonHelper
     static function importLinkedPersons(string $tableName, string $profession, \PDO $pgsql, \PDO $mysql, array $params)
     {
         // first we check in the mysql relation table if there is a link with our entity
-
         $sql = 'SELECT * FROM '.$tableName.' WHERE '.$params['targetType'].'_id = :mysqlId';
         $rsl = $mysql->prepare($sql);
         $rsl->execute([

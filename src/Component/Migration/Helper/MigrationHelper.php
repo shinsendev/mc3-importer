@@ -58,7 +58,7 @@ class MigrationHelper
             $offset = $offset+$limit;
         }
 
-        // remove the mysql_id column (add to final clean function)
+        // todo: remove the mysql_id column (add to final clean function)
 //        MigrationHelper::removeSQLid($pgsql, $itemType);
     }
 
