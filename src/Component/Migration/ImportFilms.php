@@ -22,8 +22,7 @@ class ImportFilms implements ImporterInterface
     static public function insert($pgsql, array $film, $mysql, $params = []):void
     {
         $basics = MigrationHelper::createBaseParams();
-
-        $sql = "INSERT INTO film (title, uuid, production_year, released_year, imdb, length, remake, pca, created_at, updated_at, mysql_id) VALUES (:title, :uuid, :productionYear, :released, :imdb, :length, :remake, :pca, :createdAt, :updatedAt, :mysqlId)";
+        $sql = "INSERT INTO film (title, uuid, production_year, released_year, imdb, length, remake, sample, pca, created_at, updated_at, mysql_id) VALUES (:title, :uuid, :productionYear, :released, :imdb, :length, :remake, :sample, :pca, :createdAt, :updatedAt, :mysqlId)";
         $rsl = $pgsql->prepare($sql);
         $rsl->execute([
             // set correct values
@@ -32,7 +31,8 @@ class ImportFilms implements ImporterInterface
             'released' => ($film['released']) ? $film['released'] : null,
             'imdb' => ($film['id_imdb']) ? $film['id_imdb'] : null,
             'length' => ($film['length']) ? $film['length'] : null,
-            'remake' => ($film['remake']) ? $film['remake'] : null,
+            'remake' => (isset($film['remake'])) ? MigrationHelper::getBoolValue($film['remake']) : null, // use isset because if not, PHP considers 0 even in string as not existent when use if ($film['remake'])
+            'sample' => (isset($film['sample'])) ? MigrationHelper::getBoolValue($film['sample']) : null,
             'pca' => ($film['pca_texte']) ? $film['pca_texte'] : null,
             'createdAt' => $basics['date'],
             'updatedAt' => $basics['date'],

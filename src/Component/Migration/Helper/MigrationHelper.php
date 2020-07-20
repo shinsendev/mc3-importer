@@ -11,6 +11,9 @@ use Ramsey\Uuid\Uuid;
 
 class MigrationHelper
 {
+    CONST TRUE = 'true';
+    CONST FALSE = 'false';
+
     /**
      * @param string $tableName
      * @param int $limit
@@ -275,5 +278,24 @@ class MigrationHelper
         $stm->execute(['id' => $mysqlId]);
 
         return $stm->fetch()['id'];
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function getBoolValue($value):?string // convert boolean value into string
+    {
+        if ($value == '1' ) {
+            $stringValue = self::TRUE;
+        }
+        else if ($value == '0'){
+            $stringValue = self::FALSE;
+        }
+        else {
+            $stringValue = null;
+        }
+
+        return $stringValue;
     }
 }
