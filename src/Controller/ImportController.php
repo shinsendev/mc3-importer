@@ -22,11 +22,8 @@ class ImportController extends AbstractController
     /**
      * @Route("/import/all", name="import_all")
      *
-     * @param KernelInterface $kernel
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @throws \Exception
      */
-    public function all(KernelInterface $kernel)
+    public function all()
     {
         set_time_limit(300);
 
