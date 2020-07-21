@@ -13,30 +13,6 @@ class MySQLClean
 {
     static function clean()
     {
-        $pgsqlConnection = PostgreSQLConnection::connection();
-
-        $sqlList = [
-            'DELETE FROM "user"',
-            'DELETE FROM attribute',
-            'DELETE FROM category',
-            'DELETE FROM work',
-            'DELETE FROM person',
-            'DELETE FROM number',
-            'DELETE FROM film',
-            'DELETE FROM distributor',
-            'DELETE FROM studio',
-            'DELETE FROM song',
-            'DELETE FROM comment',
-        ];
-
-        foreach ($sqlList as $sql) {
-            try {
-                $pgsqlConnection->query($sql);
-            } catch (\PDOException $e) {
-                throw new \Error($sql. $e);
-            }
-        }
-
         $connection = MySQLConnection::connection();
         $sqlList = [
             'DROP TABLE IF EXISTS `stagenumber_has_costume`;',

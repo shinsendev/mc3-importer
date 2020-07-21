@@ -10,7 +10,7 @@ use App\Component\MySQL\Connection\MySQLConnection;
 
 class MySQLInitialization
 {
-    static function init()
+    static function init():void
     {
         $connection = MySQLConnection::connection();
 
@@ -19,7 +19,5 @@ class MySQLInitialization
 
         $sql = "CREATE DATABASE IF NOT EXISTS mc2";
         $connection->query($sql);
-
-        return $connection;
     }
 }

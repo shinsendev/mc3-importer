@@ -20,7 +20,13 @@ To be used, the importer need to be connected to MySQL and a postgreSQL server.
 
 ## Homepage
 
-You can use the homepage to launch the imports processes : http://127.0.0.1:8000
+You can use the homepage to launch the imports processes : [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+## Requirements
+
+You need 
+- a copy of MC2 DB in SQL format = the MySQL data you want to import in the new PgSQL model
+- to create the mc3 DB on your local machine = all the tables and the structure of the new table, you can generate it easily with mc3 symfony project and doctrine command
 
 ## All processes
 
