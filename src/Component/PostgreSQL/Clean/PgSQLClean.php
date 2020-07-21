@@ -44,7 +44,6 @@ class PgSQLClean
             'ALTER TABLE attribute DROP mysql_id;',
             'ALTER TABLE category DROP mysql_id;',
             'ALTER TABLE person DROP mysql_id;',
-//            'ALTER TABLE category DROP mysql_id;',
             'ALTER TABLE number DROP mysql_id;',
             'ALTER TABLE film DROP mysql_id;',
             'ALTER TABLE distributor DROP mysql_id;',
