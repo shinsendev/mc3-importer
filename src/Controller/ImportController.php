@@ -6,8 +6,11 @@ use App\Component\Migration\Helper\MigrationHelper;
 use App\Component\Migration\ImportAttributes;
 use App\Component\MySQL\Clean\MySQLClean;
 use App\Component\MySQL\Import\MySQLImport;
-use App\Component\MySQL\Initialization\MySQLInitialization;
+use App\Component\Operation\CleanOperation;
+use App\Component\Operation\InitOperation;
+use App\Component\PostgreSQL\Clean\PgSQLClean;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -18,61 +21,65 @@ class ImportController extends AbstractController
 {
     /**
      * @Route("/import/all", name="import_all")
+     *
+     * @param KernelInterface $kernel
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws \Exception
      */
-    public function all()
+    public function all(KernelInterface $kernel)
     {
         set_time_limit(300);
 
+        InitOperation::init(); // STEP 1
         // prepare import by building mc2 MySQL database
-        MySQLInitialization::init();
-        MySQLImport::import('../data/mc2.sql');
-        MySQLClean::clean();
+        MySQLImport::import('../data/mc2.sql'); // STEP 2
+        CleanOperation::clean(); // STEP 3
 
         // import all users
-        MigrationHelper::importAll('fos_user', 'App\Component\Migration\ImportUsers::insert', 500);
+        MigrationHelper::importAll('fos_user', 'App\Component\Migration\ImportUsers::insert', 500); // STEP 4
         $this->addFlash('success', 'Users imported!');
 
         // import categories (from code)
-        MigrationHelper::importAll('code', 'App\Component\Migration\ImportCategories::insert', 500);
+        MigrationHelper::importAll('code', 'App\Component\Migration\ImportCategories::insert', 500); // STEP 5
         $this->addFlash('success', 'Categories imported!');
 
         // import attributes with categories (from thesaurus)
-        MigrationHelper::importAll('thesaurus', 'App\Component\Migration\ImportAttributes::insert', 500);
+        MigrationHelper::importAll('thesaurus', 'App\Component\Migration\ImportAttributes::insert', 500); // STEP 6
         $this->addFlash('success', 'Attributes imported!');
 
         // import all persons
-        MigrationHelper::importAll('person', 'App\Component\Migration\ImportPersons::insert', 500);
+        MigrationHelper::importAll('person', 'App\Component\Migration\ImportPersons::insert', 500); // STEP 7
         $this->addFlash('success', 'Persons imported!');
 
         // import films
-        MigrationHelper::importAll('film', 'App\Component\Migration\ImportFilms::insert', 500);
+        MigrationHelper::importAll('film', 'App\Component\Migration\ImportFilms::insert', 500); // STEP 8
         $this->addFlash('success', 'Films imported!');
 
         // import numbers
-        MigrationHelper::importAll('number', 'App\Component\Migration\ImportNumbers::insert', 500);
+        MigrationHelper::importAll('number', 'App\Component\Migration\ImportNumbers::insert', 500); // STEP 9
         $this->addFlash('success', 'Numbers imported!');
 
         // import songs
-        MigrationHelper::importAll('song', 'App\Component\Migration\ImportSongs::insert', 500);
+        MigrationHelper::importAll('song', 'App\Component\Migration\ImportSongs::insert', 500); // STEP 10
         $this->addFlash('success', 'Songs imported!');
 
         // import all distributors
-        MigrationHelper::importAll('distributor', 'App\Component\Migration\ImportDistributors::insert', 500);
+        MigrationHelper::importAll('distributor', 'App\Component\Migration\ImportDistributors::insert', 500); // STEP 11
 
         // import all studios
-        MigrationHelper::importAll('studio', 'App\Component\Migration\ImportStudios::insert', 500);
+        MigrationHelper::importAll('studio', 'App\Component\Migration\ImportStudios::insert', 500); // STEP 12
 
         // import films distributors links
-        MigrationHelper::importRelations('film_has_distributor', 'film_distributor', 'film', 'distributor',1000);
+        MigrationHelper::importRelations('film_has_distributor', 'film_distributor', 'film', 'distributor',1000); // STEP 13
 
         // import films studios links
-        MigrationHelper::importRelations('film_has_studio', 'film_studio', 'film', 'studio',1000);
+        MigrationHelper::importRelations('film_has_studio', 'film_studio', 'film', 'studio',1000); // STEP 14
 
         // import censorship
-        ImportAttributes::importExternalThesaurusString('censorship', 'censorship', 'film_has_censorship', 'film_attribute', 'film', 1000, true );
+        ImportAttributes::importExternalThesaurusString('censorship', 'censorship', 'film_has_censorship', 'film_attribute', 'film', 1000, true ); // STEP 15
 
         // import states
-        ImportAttributes::importExternalThesaurusString('state', 'state', 'film_has_state', 'film_attribute', 'film', 1000, true );
+        ImportAttributes::importExternalThesaurusString('state', 'state', 'film_has_state', 'film_attribute', 'film', 1000, true ); // STEP 16
 
         // import number attributes
 
@@ -131,29 +138,32 @@ class ImportController extends AbstractController
         ImportAttributes::importRelationsForExistingAttributes('song_has_songtype', 'song_attribute', 'songtype', 'song', 'attribute', 'song_id', 'songtype_id',  1000);
 
         MySQLClean::finish();
+        PgSQLClean::finish();
 
         $this->addFlash('success', 'Everything is ok');
         return $this->redirectToRoute('home');
     }
 
     /**
+     * STEP 1
+     *
      * @Route("/import/init", name="import_init")
      */
     public function init()
     {
-        MySQLInitialization::init();
-
+        InitOperation::init();
         $this->addFlash('success', 'Initialisation ok');
         return $this->redirectToRoute('home');
     }
 
     /**
+     * STEP 2
+     *
      * @Route("/import/creation", name="import_creation")
      */
     public function create()
     {
         MySQLImport::import('../data/mc2.sql');
-
         $this->addFlash('success', 'DB structure has been created and data has been imported');
         return $this->redirectToRoute('home');
     }
@@ -163,8 +173,8 @@ class ImportController extends AbstractController
      */
     public function clean()
     {
-        MySQLClean::clean();
-        $this->addFlash('success', 'DB has been cleaned.');
+        CleanOperation::clean(); // STEP 3
+        $this->addFlash('success', 'DBs has been cleaned.');
         return $this->redirectToRoute('home');
     }
 
