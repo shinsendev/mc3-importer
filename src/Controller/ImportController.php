@@ -60,11 +60,15 @@ class ImportController extends AbstractController
         MigrationHelper::importAll('song', 'App\Component\Migration\ImportSongs::insert', 500); // STEP 10
         $this->addFlash('success', 'Songs imported!');
 
+        // songs numbers relations
+        MigrationHelper::importRelations('number_has_song', 'number_song', 'number', 'song',1000);
+
         // import all distributors
         MigrationHelper::importAll('distributor', 'App\Component\Migration\ImportDistributors::insert', 500); // STEP 11
 
         // import all studios
         MigrationHelper::importAll('studio', 'App\Component\Migration\ImportStudios::insert', 500); // STEP 12
+
 
         // import films distributors links
         MigrationHelper::importRelations('film_has_distributor', 'film_distributor', 'film', 'distributor',1000); // STEP 13
@@ -73,10 +77,10 @@ class ImportController extends AbstractController
         MigrationHelper::importRelations('film_has_studio', 'film_studio', 'film', 'studio',1000); // STEP 14
 
         // import censorship
-        ImportAttributes::importExternalThesaurusString('censorship', 'censorship', 'film_has_censorship', 'film_attribute', 'film', 1000, true ); // STEP 15
+        ImportAttributes::importExternalThesaurusString('censorship', 'censorship', 'film_has_censorship', 'film_attribute', 'film', 1000 ); // STEP 15
 
         // import states
-        ImportAttributes::importExternalThesaurusString('state', 'state', 'film_has_state', 'film_attribute', 'film', 1000, true ); // STEP 16
+        ImportAttributes::importExternalThesaurusString('state', 'state', 'film_has_state', 'film_attribute', 'film', 1000 ); // STEP 16
 
         // import number attributes
 
@@ -122,14 +126,11 @@ class ImportController extends AbstractController
         // stereotype
         ImportAttributes::importRelationsForExistingAttributes('number_has_stereotype', 'number_attribute', 'stereotype_thesaurus', 'number', 'attribute', 'number_id', 'stereotype_id',  1000);
 
-        // numbers
+        // numbers comments
         MigrationHelper::importAll('number','App\Component\Migration\ImportNumberComments::insert', 500);
 
         // thesaurus
         MigrationHelper::importAll('thesaurus','App\Component\Migration\ImportThesaurusComments::insert', 500);
-
-        // songs numbers relations
-        MigrationHelper::importRelations('number_has_song', 'number_song', 'number', 'song',1000);
 
         // songs attributes relations
         ImportAttributes::importRelationsForExistingAttributes('song_has_songtype', 'song_attribute', 'songtype', 'song', 'attribute', 'song_id', 'songtype_id',  1000);
