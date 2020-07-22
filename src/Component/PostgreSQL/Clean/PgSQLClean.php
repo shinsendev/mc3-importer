@@ -24,6 +24,15 @@ class PgSQLClean
             'DELETE FROM studio',
             'DELETE FROM song',
             'DELETE FROM comment',
+            'ALTER TABLE "user" ADD mysql_id INT;',
+            'ALTER TABLE attribute ADD mysql_id INT;',
+            'ALTER TABLE category ADD mysql_id INT;',
+            'ALTER TABLE person ADD mysql_id INT;',
+            'ALTER TABLE number ADD mysql_id INT;',
+            'ALTER TABLE film ADD mysql_id INT;',
+            'ALTER TABLE distributor ADD mysql_id INT;',
+            'ALTER TABLE studio ADD mysql_id INT;',
+            'ALTER TABLE song ADD mysql_id INT;',
         ];
 
         foreach ($sqlList as $sql) {

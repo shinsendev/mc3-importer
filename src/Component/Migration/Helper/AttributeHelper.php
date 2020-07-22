@@ -45,6 +45,7 @@ class AttributeHelper
             $attribute = self::createAttribute($thesaurusId, $categoryName, $modelType, $psql, $mysql);
         }
 
+
         // then we import the relationship
 
         // get id of the last related entity inserted
