@@ -69,6 +69,7 @@ class ImportController extends AbstractController
         // import all studios
         MigrationHelper::importAll('studio', 'App\Component\Migration\ImportStudios::insert', 500); // STEP 12
 
+
         // import films distributors links
         MigrationHelper::importRelations('film_has_distributor', 'film_distributor', 'film', 'distributor',1000); // STEP 13
 
@@ -76,10 +77,10 @@ class ImportController extends AbstractController
         MigrationHelper::importRelations('film_has_studio', 'film_studio', 'film', 'studio',1000); // STEP 14
 
         // import censorship
-        ImportAttributes::importExternalThesaurusString('censorship', 'censorship', 'film_has_censorship', 'film_attribute', 'film', 1000, true ); // STEP 15
+        ImportAttributes::importExternalThesaurusString('censorship', 'censorship', 'film_has_censorship', 'film_attribute', 'film', 1000 ); // STEP 15
 
         // import states
-        ImportAttributes::importExternalThesaurusString('state', 'state', 'film_has_state', 'film_attribute', 'film', 1000, true ); // STEP 16
+        ImportAttributes::importExternalThesaurusString('state', 'state', 'film_has_state', 'film_attribute', 'film', 1000 ); // STEP 16
 
         // import number attributes
 

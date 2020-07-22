@@ -80,8 +80,7 @@ class ImportAttributes implements ImporterInterface
         string $mySQLRelationTableName,
         string $pgSQLRelationTableName,
         string $model,
-        int $limit = 1000,
-        bool $isThesaurus = false
+        int $limit = 1000
     ) :void
     {
         // connect to PostgreSQL and insert the usefull data of the list
@@ -89,10 +88,9 @@ class ImportAttributes implements ImporterInterface
 
         // connect to MySQL and get films list
         $mysql = MySQLConnection::connection();
-
         $basics = MigrationHelper::createBaseParams();
 
-        // create a new category (todo: check if not exists)
+        // create a new category
         $params = [
             // set correct values
             'title' => $categoryTitle,
@@ -103,6 +101,7 @@ class ImportAttributes implements ImporterInterface
             'updatedAt' => $basics['date'],
             'uuid' => $basics['uuid']
         ];
+
         CategoryHelper::insertCategory($params, $pgsql);
 
         //get the new created categoryId, if no categoryId, throw an error
@@ -150,9 +149,9 @@ class ImportAttributes implements ImporterInterface
             $stmt->execute();
             $relations = $stmt->fetchAll();
 
-            // the we insert the films one by one
+            // the we insert the relations with the films or numbers, etc. (the model) one by one
             foreach($relations as $relation) {
-                MigrationHelper::insertRelation($pgSQLRelationTableName, $relation, $model, $categoryTitle, $pgsql, $isThesaurus);
+                MigrationHelper::insertRelation($pgSQLRelationTableName, $relation, $model, $categoryTitle, $pgsql, true);
             }
             $offset = $offset + $limit;
         }

@@ -114,9 +114,12 @@ class MigrationHelper
         // if it is a thesaurus, the target is an attribute
         $targetIdName = $targetType.'_id';
         if ($isThesaurus) {
-            $targetType = 'attribute';
+            // sometime in thesaurus, it is possible to have two same mysql_id
+            $targetId = MigrationHelper::getEntityByMySQLIdAttributeWithDisambiguation($pgsql, $relation[$targetIdName], $targetType);
         }
-        $targetId = MigrationHelper::getEntityByMySQLId($pgsql, $relation[$targetIdName], $targetType);
+        else {
+            $targetId = MigrationHelper::getEntityByMySQLId($pgsql, $relation[$targetIdName], $targetType);
+        }
 
         // we save the relation with the psql id
         $stmt->execute(['source' => $sourceId, 'target' => $targetId]);
@@ -276,6 +279,23 @@ class MigrationHelper
         $sql = 'SELECT id FROM '.$model.' WHERE mysql_id = :id';
         $stm = $pgsql->prepare($sql);
         $stm->execute(['id' => $mysqlId]);
+
+        return $stm->fetch()['id'];
+    }
+
+    /**
+     * @param \PDO $pgsql
+     * @param string $mysqlId
+     * @param string $model
+     * @param int $code
+     * @return int
+     */
+    static public function getEntityByMySQLIdAttributeWithDisambiguation(\PDO $pgsql, string $mysqlId, string $code):int
+    {
+        // sometimes it is possible we have two same mysqlId for two differents attributes (example with censorships and structure attributes)
+        $sql = 'SELECT a.id FROM attribute a INNER JOIN category c ON a.category_id = c.id WHERE a.mysql_id = :id AND c.title = :code';
+        $stm = $pgsql->prepare($sql);
+        $stm->execute(['id' => $mysqlId, 'code' => $code]);
 
         return $stm->fetch()['id'];
     }
