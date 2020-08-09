@@ -14,6 +14,7 @@ class PgSQLClean
 
         $sqlList = [
             'DELETE FROM "user"',
+            'DELETE FROM contributor',
             'DELETE FROM attribute',
             'DELETE FROM category',
             'DELETE FROM work',
@@ -24,15 +25,15 @@ class PgSQLClean
             'DELETE FROM studio',
             'DELETE FROM song',
             'DELETE FROM comment',
-            'ALTER TABLE "user" ADD mysql_id INT;',
-            'ALTER TABLE attribute ADD mysql_id INT;',
-            'ALTER TABLE category ADD mysql_id INT;',
-            'ALTER TABLE person ADD mysql_id INT;',
-            'ALTER TABLE number ADD mysql_id INT;',
-            'ALTER TABLE film ADD mysql_id INT;',
-            'ALTER TABLE distributor ADD mysql_id INT;',
-            'ALTER TABLE studio ADD mysql_id INT;',
-            'ALTER TABLE song ADD mysql_id INT;',
+            'ALTER TABLE contributor ADD COLUMN IF NOT EXISTS mysql_id INT;',
+            'ALTER TABLE attribute ADD COLUMN IF NOT EXISTS mysql_id INT;',
+            'ALTER TABLE category ADD COLUMN IF NOT EXISTS mysql_id INT;',
+            'ALTER TABLE person ADD COLUMN IF NOT EXISTS mysql_id INT;',
+            'ALTER TABLE number ADD COLUMN IF NOT EXISTS mysql_id INT;',
+            'ALTER TABLE film ADD COLUMN IF NOT EXISTS mysql_id INT;',
+            'ALTER TABLE distributor ADD COLUMN IF NOT EXISTS mysql_id INT;',
+            'ALTER TABLE studio ADD COLUMN IF NOT EXISTS mysql_id INT;',
+            'ALTER TABLE song ADD COLUMN IF NOT EXISTS mysql_id INT;',
         ];
 
         foreach ($sqlList as $sql) {
@@ -49,7 +50,7 @@ class PgSQLClean
         $pgsqlConnection = PostgreSQLConnection::connection();
 
         $sqlList = [
-            'ALTER TABLE "user" DROP mysql_id;',
+            'ALTER TABLE contributor DROP mysql_id;',
             'ALTER TABLE attribute DROP mysql_id;',
             'ALTER TABLE category DROP mysql_id;',
             'ALTER TABLE person DROP mysql_id;',

@@ -20,7 +20,7 @@ class ImportUsers implements ImporterInterface
      */
     static public function writeSQL():string
     {
-        return "INSERT INTO \"user\" (name, email, roles, uuid, created_at, updated_at, mysql_id) VALUES (:name, :email, :roles, :uuid, :createdAt, :updatedAt, :mysqlId)";
+        return "INSERT INTO contributor (name, email, uuid, created_at, updated_at, mysql_id) VALUES (:name, :email, :uuid, :createdAt, :updatedAt, :mysqlId)";
     }
 
     /**
@@ -35,7 +35,6 @@ class ImportUsers implements ImporterInterface
             // set correct values
             'name' => ($user['username']) ? $user['username'] : null,
             'email' => ($user['email']) ? $user['email'] : null,
-            'roles' => ($user['roles']) ? $user['roles'] : null,
             'createdAt' => ($user['last_login'] && $user['last_login'] > 0) ? $user['last_login'] : $basics['date'],
             'updatedAt' => ($user['last_login'] && $user['last_login'] > 0) ? $user['last_login'] : $basics['date'],
             'uuid' => $basics['uuid'],
