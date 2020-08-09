@@ -53,9 +53,9 @@ class UserHelper
         ]);
     }
 
-    public static function getEditor(int $id, \PDO $pgsql)
+    public static function getEditor(int $id, \PDO $pgsql):array
     {
-        $sql = 'SELECT * FROM "user" WHERE mysql_id = :id';
+        $sql = 'SELECT * FROM contributor WHERE mysql_id = :id';
         $stm = $pgsql->prepare($sql);
         $stm->execute(['id' => $id]);
 

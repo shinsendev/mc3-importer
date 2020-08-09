@@ -14,6 +14,7 @@ class PgSQLClean
 
         $sqlList = [
             'DELETE FROM "user"',
+            'DELETE FROM contributor',
             'DELETE FROM attribute',
             'DELETE FROM category',
             'DELETE FROM work',
