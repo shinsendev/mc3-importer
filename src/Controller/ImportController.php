@@ -11,6 +11,7 @@ use App\Component\Operation\CleanOperation;
 use App\Component\Operation\InitOperation;
 use App\Component\PostgreSQL\Clean\PgSQLClean;
 use App\Component\Security\Security;
+use App\Component\Steps\AllSteps;
 use App\Component\Steps\InitializationStep;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,6 +35,9 @@ class ImportController extends AbstractController
         if (!Security::isGranted($request)) {
             return new JsonResponse('Not authorized to execute the import.', 403);
         }
+
+        // launch the import
+        AllSteps::importAll();
 
         return new JsonResponse('Import succeeds.', 200);
     }
