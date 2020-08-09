@@ -37,7 +37,7 @@ class ImportController extends AbstractController
         }
 
         // launch the import
-        AllSteps::importAll();
+        AllSteps::execute();
 
         return new JsonResponse('Import succeeds.', 200);
     }

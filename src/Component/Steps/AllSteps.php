@@ -9,9 +9,9 @@ use App\Component\Number\NumberManyToManyAttributesImporter;
 use App\Component\PostgreSQL\Clean\PgSQLClean;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class AllSteps
+class AllSteps implements StepInterface
 {
-    public static function importAll():bool
+    public static function execute():bool
     {
         set_time_limit(300);
 

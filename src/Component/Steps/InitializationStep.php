@@ -12,7 +12,7 @@ use App\Component\Operation\InitOperation;
  * Class InitializationStep
  * @package App\Component\Steps
  */
-class InitializationStep
+class InitializationStep implements StepInterface
 {
     const SQL_FILE_DIR = '../data/mc2.sql';
 
