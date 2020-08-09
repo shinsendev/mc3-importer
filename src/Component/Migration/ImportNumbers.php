@@ -83,6 +83,8 @@ class ImportNumbers implements ImporterInterface
             AttributeHelper::importAttribute($number['cast_id'], 'cast', 'number', $pgsql, $mysql);
         }
 
+        //todo: diegetic_thesaurus?
+
         // add persons relations
         $personParams['date'] = $basics['date'];
         $personParams['uuid'] = $basics['uuid'];
