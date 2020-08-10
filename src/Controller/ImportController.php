@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ImportController extends AbstractController
 {
-    const NO_AURTHORIZATION_MESSAGE = 'You areself::NO_AURTHORIZATION_MESSAGE';
+    const NO_AURTHORIZATION_MESSAGE = 'You are not authorized';
 
     /**
      * @Route("/import/all", name="import", methods={"POST"})
