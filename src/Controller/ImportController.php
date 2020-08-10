@@ -2,21 +2,21 @@
 
 namespace App\Controller;
 
-use App\Component\Migration\Helper\MigrationHelper;
-use App\Component\Migration\ImportAttributes;
-use App\Component\MySQL\Clean\MySQLClean;
-use App\Component\MySQL\Import\MySQLImport;
-use App\Component\Number\NumberManyToManyAttributesImporter;
-use App\Component\Operation\CleanOperation;
-use App\Component\Operation\InitOperation;
-use App\Component\PostgreSQL\Clean\PgSQLClean;
 use App\Component\Security\Security;
 use App\Component\Steps\AllSteps;
+use App\Component\Steps\CommentStep;
+use App\Component\Steps\ContributorStep;
+use App\Component\Steps\FIlmStep;
 use App\Component\Steps\InitializationStep;
+use App\Component\Steps\MiscellaneousStep;
+use App\Component\Steps\NumberStep;
+use App\Component\Steps\PersonStep;
+use App\Component\Steps\PostProcessStep;
+use App\Component\Steps\SongStep;
+use App\Component\Steps\ThesaurusStep;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -25,6 +25,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ImportController extends AbstractController
 {
+    const NO_AURTHORIZATION_MESSAGE = 'You areself::NO_AURTHORIZATION_MESSAGE';
+
     /**
      * @Route("/import/all", name="import", methods={"POST"})
      *
@@ -33,7 +35,7 @@ class ImportController extends AbstractController
     {
         // check if client is granted to make import
         if (!Security::isGranted($request)) {
-            return new JsonResponse('Not authorized to execute the import.', 403);
+            return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
         }
 
         // launch the import
@@ -43,180 +45,143 @@ class ImportController extends AbstractController
     }
 
     /**
-     * STEP 1
-     *
-     * @Route("/import/init", name="import_init")
+     * @Route("/import/init", name="import_init",  methods={"POST"})
      */
-    public function init()
+    public function init(Request $request)
     {
+        // check if client is granted to make import
+        if (!Security::isGranted($request)) {
+            return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
+        }
+
         InitializationStep::execute();
         $this->addFlash('success', 'Initialisation ok, DB structure has been created and data has been imported &DBs has been cleaned.');
-        return $this->redirectToRoute('home');
+        return new JsonResponse('Initialisation ok, DB structure has been created and data has been imported &DBs has been cleaned.', 200);
     }
 
     /**
-     * @Route("/import/categories", name="import_thesaurus")
+     * @Route("/import/contributors", name="import_contributors", methods={"POST"})
      */
-    public function importCategories()
+    public function importContributors(Request $request)
     {
-        MigrationHelper::importAll('code', 'App\Component\Migration\ImportCategories::insert', 500);
-        MigrationHelper::importAll('thesaurus', 'App\Component\Migration\ImportAttributes::insert', 500);
+        // check if client is granted to make import
+        if (!Security::isGranted($request)) {
+            return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
+        }
+
+        ContributorStep::execute();
+        return new JsonResponse('Contributors have been successfully imported.', 200);
+    }
 
 
-        return $this->redirectToRoute('home');
+    /**
+     * @Route("/import/categories", name="import_thesaurus", methods={"POST"})
+     */
+    public function importCategories(Request $request)
+    {
+        // check if client is granted to make import
+        if (!Security::isGranted($request)) {
+            return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
+        }
+
+        ThesaurusStep::execute();
+        return new JsonResponse('Categories and attributes have been successfully imported.', 200);
+    }
+
+
+    /**
+     * @Route("/import/people", name="import_people",  methods={"POST"})
+     */
+    public function importPeople(Request $request)
+    {
+        // check if client is granted to make import
+        if (!Security::isGranted($request)) {
+            return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
+        }
+
+        PersonStep::execute();
+        return new JsonResponse('People have been successfully imported.', 200);
     }
 
 
     /**
      * @Route("/import/films", name="import_films")
      */
-    public function importFilms()
+    public function importFilms(Request $request)
     {
-        MigrationHelper::importAll('film', 'App\Component\Migration\ImportFilms::insert', 500);
+        // check if client is granted to make import
+        if (!Security::isGranted($request)) {
+            return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
+        }
 
-        return $this->redirectToRoute('home');
+        FIlmStep::execute();
+        return new JsonResponse('Films have been successfully imported.', 200);
     }
 
     /**
      * @Route("/import/numbers", name="import_numbers")
      */
-    public function importNumbers()
+    public function importNumbers(Request $request)
     {
-        MigrationHelper::importAll('number', 'App\Component\Migration\ImportNumbers::insert', 500);
+        // check if client is granted to make import
+        if (!Security::isGranted($request)) {
+            return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
+        }
 
-        return $this->redirectToRoute('home');
+        NumberStep::execute();
+        return new JsonResponse('Numbers have been successfully imported.', 200);
     }
 
     /**
      * @Route("/import/songs", name="import_songs")
      */
-    public function importSongs()
+    public function importSongs(Request $request)
     {
-        MigrationHelper::importAll('song', 'App\Component\Migration\ImportSongs::insert', 500);
+        // check if client is granted to make import
+        if (!Security::isGranted($request)) {
+            return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
+        }
 
-        return $this->redirectToRoute('home');
+        SongStep::execute();
+        return new JsonResponse('Songs have been successfully imported.', 200);
     }
 
     /**
-     * @Route("/import/persons", name="import_persons")
+     * @Route("/import/miscellaneous", name="import_miscellaneous")
      */
-    public function importPersons()
+    public function importMiscellaneous(Request $request)
     {
-        MigrationHelper::importAll('person', 'App\Component\Migration\ImportPersons::insert', 500);
+        MiscellaneousStep::execute();
+        return new JsonResponse('Studios and distributors have been successfully imported.', 200);
 
-        return $this->redirectToRoute('home');
-    }
-
-    /**
-     * @Route("/import/studios", name="import_studios")
-     */
-    public function importStudios()
-    {
-        MigrationHelper::importAll('studio', 'App\Component\Migration\ImportStudios::insert', 500);
-
-        return $this->redirectToRoute('home');
-    }
-
-    /**
-     * @Route("/import/distributors", name="import_distributors")
-     */
-    public function importDistributors()
-    {
-        MigrationHelper::importAll('distributor', 'App\Component\Migration\ImportDistributors::insert', 500);
-
-        return $this->redirectToRoute('home');
-    }
-
-    /**
-     * @Route("/import/users", name="import_users")
-     */
-    public function importUsers()
-    {
-        MigrationHelper::importAll('fos_user', 'App\Component\Migration\ImportUsers::insert', 500);
-
-        return $this->redirectToRoute('home');
-    }
-
-    /**
-     * @Route("/import/film-studio-relations", name="import_film_studio_relations")
-     */
-    public function importFilmsStudioRelations()
-    {
-        MigrationHelper::importRelations('film_has_studio', 'film_studio', 'film', 'studio',1000);
-
-        return $this->redirectToRoute('home');
-    }
-
-    /**
-     * @Route("/import/film-distributor-relations", name="import_film_distributor_relations")
-     */
-    public function importFilmsDistributorRelations()
-    {
-        MigrationHelper::importRelations('film_has_distributor', 'film_distributor', 'film', 'distributor', 1000);
-
-        return $this->redirectToRoute('home');
-    }
-
-    /**
-     * @Route("/import/film-censorship-thesaurus", name="import_film_censorship_thesaurus")
-     */
-    public function importFilmCensorshipThesaurus()
-    {
-        ImportAttributes::importExternalThesaurusString('censorship', 'censorship', 'film_has_censorship', 'film_attribute', 'film', 1000, true );
-
-        return $this->redirectToRoute('home');
-    }
-
-    /**
-     * @Route("/import/film-state-thesaurus", name="import_film_state_thesaurus")
-     */
-    public function importFilmStateThesaurus()
-    {
-        ImportAttributes::importExternalThesaurusString('state', 'state', 'film_has_state', 'film_attribute', 'film', 1000, true );
-
-        return $this->redirectToRoute('home');
-    }
-
-    /**
-     * @Route("/import/number-attributes", name="import_number_attributes")
-     */
-    public function importNumberAttributes()
-    {
-       NumberManyToManyAttributesImporter::import();
-        return $this->redirectToRoute('home');
     }
 
     /**
      * @Route("/import/comments", name="import_comments")
      */
-    public function importComments()
+    public function importComments(Request $request)
     {
-        // numbers
-        MigrationHelper::importAll('number','App\Component\Migration\ImportNumberComments::insert', 500);
+        // check if client is granted to make import
+        if (!Security::isGranted($request)) {
+            return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
+        }
 
-        // thesaurus
-        MigrationHelper::importAll('thesaurus','App\Component\Migration\ImportThesaurusComments::insert', 500);
-
-        return $this->redirectToRoute('home');
+        CommentStep::execute();
+        return new JsonResponse('Comments have been successfully imported.', 200);
     }
 
     /**
-     * @Route("/import/song-number", name="import_song_number_relations")
+     * @Route("/import/postprocess", name="post_process")
      */
-    public function importSongNumberRelations()
+    public function postProcess(Request $request)
     {
-        MigrationHelper::importRelations('number_has_song', 'number_song', 'number', 'song',1000);
+        // check if client is granted to make import
+        if (!Security::isGranted($request)) {
+            return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
+        }
 
-        return $this->redirectToRoute('home');
+        PostProcessStep::execute();
+        return new JsonResponse('Post process operations have been successfully been executed.', 200);
     }
 
-    /**
-     * @Route("/import/song-attributes", name="import_song_attributes")
-     */
-    public function importSongAttributes()
-    {
-        ImportAttributes::importRelationsForExistingAttributes('song_has_songtype', 'song_attribute', 'songtype', 'song', 'attribute', 'song_id', 'songtype_id',  1000);
-
-        return $this->redirectToRoute('home');
-    }
 }

@@ -47,6 +47,10 @@ class ImportNumbers implements ImporterInterface
             'dubbing' => ($number['dubbing']) ? $number['dubbing'] : null,
         ]);
 
+        if ($number['diegetic_thesaurus_id']) {
+            AttributeHelper::importAttribute($number['diegetic_thesaurus_id'], 'diegetic_thesaurus', 'number', $pgsql, $mysql);
+        }
+
         if ($number['structure_id']) {
             AttributeHelper::importAttribute($number['structure_id'], 'structure', 'number', $pgsql, $mysql);
         }
