@@ -148,6 +148,11 @@ class ImportController extends AbstractController
      */
     public function importMiscellaneous(Request $request)
     {
+        // check if client is granted to make import
+        if (!Security::isGranted($request)) {
+            return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
+        }
+
         MiscellaneousStep::execute();
         return new JsonResponse('Studios and distributors have been successfully imported.', 200);
 
