@@ -55,10 +55,6 @@ class ImportNumbers implements ImporterInterface
             AttributeHelper::importAttribute($number['structure_id'], 'structure', 'number', $pgsql, $mysql);
         }
 
-        if ($number['structure_id']) {
-            AttributeHelper::importAttribute($number['diegetic_thesaurus_id'], 'diegetic_thesaurus', 'number', $pgsql, $mysql);
-        }
-
         if ($number['begin_thesaurus']) {
             AttributeHelper::importAttribute($number['begin_thesaurus'], 'begin', 'number', $pgsql, $mysql);
         }
@@ -90,8 +86,6 @@ class ImportNumbers implements ImporterInterface
         if ($number['cast_id']) {
             AttributeHelper::importAttribute($number['cast_id'], 'cast', 'number', $pgsql, $mysql);
         }
-
-        //todo: diegetic_thesaurus?
 
         // add persons relations
         $personParams['date'] = $basics['date'];

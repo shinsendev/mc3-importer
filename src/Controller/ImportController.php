@@ -38,9 +38,7 @@ class ImportController extends AbstractController
             return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
         }
 
-        // launch the import
         AllSteps::execute();
-
         return new JsonResponse('Import succeeds.', 200);
     }
 
@@ -55,7 +53,6 @@ class ImportController extends AbstractController
         }
 
         InitializationStep::execute();
-        $this->addFlash('success', 'Initialisation ok, DB structure has been created and data has been imported &DBs has been cleaned.');
         return new JsonResponse('Initialisation ok, DB structure has been created and data has been imported &DBs has been cleaned.', 200);
     }
 
