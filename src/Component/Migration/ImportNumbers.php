@@ -47,12 +47,12 @@ class ImportNumbers implements ImporterInterface
             'dubbing' => ($number['dubbing']) ? $number['dubbing'] : null,
         ]);
 
-        if ($number['structure_id']) {
-            AttributeHelper::importAttribute($number['structure_id'], 'structure', 'number', $pgsql, $mysql);
+        if ($number['diegetic_thesaurus_id']) {
+            AttributeHelper::importAttribute($number['diegetic_thesaurus_id'], 'diegetic_thesaurus', 'number', $pgsql, $mysql);
         }
 
         if ($number['structure_id']) {
-            AttributeHelper::importAttribute($number['diegetic_thesaurus_id'], 'diegetic_thesaurus', 'number', $pgsql, $mysql);
+            AttributeHelper::importAttribute($number['structure_id'], 'structure', 'number', $pgsql, $mysql);
         }
 
         if ($number['begin_thesaurus']) {
@@ -86,8 +86,6 @@ class ImportNumbers implements ImporterInterface
         if ($number['cast_id']) {
             AttributeHelper::importAttribute($number['cast_id'], 'cast', 'number', $pgsql, $mysql);
         }
-
-        //todo: diegetic_thesaurus?
 
         // add persons relations
         $personParams['date'] = $basics['date'];
