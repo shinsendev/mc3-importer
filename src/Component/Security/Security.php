@@ -10,7 +10,7 @@ class Security
 {
     public static function isGranted(Request $request)
     {
-        $hash = $request->headers->get('MC3_IMPORTER_SECURITY_HASH');
+        $hash = $request->headers->get('mc3-importer-security-hash');
         if (!$hash) {
             return false;
         }
