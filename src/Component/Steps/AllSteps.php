@@ -2,13 +2,6 @@
 
 namespace App\Component\Steps;
 
-use App\Component\Migration\Helper\MigrationHelper;
-use App\Component\Migration\ImportAttributes;
-use App\Component\MySQL\Clean\MySQLClean;
-use App\Component\Number\NumberManyToManyAttributesImporter;
-use App\Component\PostgreSQL\Clean\PgSQLClean;
-use Symfony\Component\HttpFoundation\JsonResponse;
-
 class AllSteps implements StepInterface
 {
     /**

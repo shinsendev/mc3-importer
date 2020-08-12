@@ -13,7 +13,6 @@ class PgSQLClean
         $pgsqlConnection = PostgreSQLConnection::connection();
 
         $sqlList = [
-            'DELETE FROM "user"',
             'DELETE FROM contributor',
             'DELETE FROM attribute',
             'DELETE FROM category',
