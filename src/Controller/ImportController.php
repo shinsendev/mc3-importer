@@ -155,7 +155,6 @@ class ImportController extends AbstractController
 
         MiscellaneousStep::execute();
         return new JsonResponse('Studios and distributors have been successfully imported.', 200);
-
     }
 
     /**
