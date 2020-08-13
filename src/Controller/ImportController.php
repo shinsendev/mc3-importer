@@ -41,6 +41,7 @@ class ImportController extends AbstractController
             return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
         }
 
+        $logger->info('Import process is about to be launched');
         $process = Process::fromShellCommandline('cd ../ && sh start.sh');
         $process->start();
         return new JsonResponse('Import has been launched.', 200);

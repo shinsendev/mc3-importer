@@ -22,8 +22,6 @@ class MySQLInitialization
 
     public static function dropTables(\PDO $connection)
     {
-        //todo: add logs
-
         // select all mysql tables for deleting them
         $sql = "SELECT CONCAT('DROP TABLE ', table_name, ';') AS 'command' FROM information_schema.tables WHERE table_schema = 'mc2'; ";
         $stmt = $connection->prepare($sql);
