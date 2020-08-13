@@ -4,7 +4,9 @@
 namespace App\Component\Steps;
 
 
+use Psr\Log\LoggerInterface;
+
 interface StepInterface
 {
-    static function execute();
+    static function execute(LoggerInterface $logger);
 }

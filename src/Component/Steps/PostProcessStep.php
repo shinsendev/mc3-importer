@@ -9,10 +9,11 @@ namespace App\Component\Steps;
 use App\Component\ImportEntity\ImportEntityManager;
 use App\Component\MySQL\Clean\MySQLClean;
 use App\Component\PostgreSQL\Clean\PgSQLClean;
+use Psr\Log\LoggerInterface;
 
 class PostProcessStep implements StepInterface
 {
-    static function execute()
+    static function execute(LoggerInterface $logger)
     {
         MySQLClean::finish();
         PgSQLClean::finish();
