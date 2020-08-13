@@ -2,44 +2,46 @@
 
 namespace App\Component\Steps;
 
+use Psr\Log\LoggerInterface;
+
 class AllSteps implements StepInterface
 {
     /**
      * @return bool
      */
-    public static function execute():bool
+    public static function execute(LoggerInterface $logger):bool
     {
         set_time_limit(300);
-
+dd('stop');
         // Step 1: initialization
-        InitializationStep::execute();
+        InitializationStep::execute($logger);
 
         // Step 2: import all contributors
-        ContributorStep::execute();
+        ContributorStep::execute($logger);
 
         // step 3: thesaurus
-        ThesaurusStep::execute();
+        ThesaurusStep::execute($logger);
 
         // step 4: people
-        PersonStep::execute();
+        PersonStep::execute($logger);
 
         // step 5: films
-        FIlmStep::execute();
+        FIlmStep::execute($logger);
 
         // step 6: numbers
-        NumberStep::execute();
+        NumberStep::execute($logger);
 
         // step 7: songs
-        SongStep::execute();
+        SongStep::execute($logger);
 
         // step 8: miscellaneous
-        MiscellaneousStep::execute();
+        MiscellaneousStep::execute($logger);
 
         // step 9:  comments
-        CommentStep::execute();
+        CommentStep::execute($logger);
 
         // step 10: post process
-        PostProcessStep::execute();
+        PostProcessStep::execute($logger);
 
         return true;
     }

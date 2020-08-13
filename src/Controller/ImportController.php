@@ -14,10 +14,12 @@ use App\Component\Steps\PersonStep;
 use App\Component\Steps\PostProcessStep;
 use App\Component\Steps\SongStep;
 use App\Component\Steps\ThesaurusStep;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Process\Process;
 
 /**
  * Class ImportController
@@ -31,15 +33,16 @@ class ImportController extends AbstractController
      * @Route("/import/all", name="import", methods={"POST"})
      *
      */
-    public function import(Request $request)
+    public function import(Request $request, LoggerInterface $logger)
     {
         // check if client is granted to make import
         if (!Security::isGranted($request)) {
             return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
         }
 
-        AllSteps::execute();
-        return new JsonResponse('Import succeeds.', 200);
+        $process = Process::fromShellCommandline('cd ../ && sh start.sh');
+        $process->start();
+        return new JsonResponse('Import has been launched.', 200);
     }
 
     /**

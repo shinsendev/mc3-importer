@@ -7,10 +7,11 @@ namespace App\Component\Steps;
 
 
 use App\Component\Migration\Helper\MigrationHelper;
+use Psr\Log\LoggerInterface;
 
 class MiscellaneousStep implements StepInterface
 {
-    static function execute()
+    static function execute(LoggerInterface $logger)
     {
         // import all distributors
         MigrationHelper::importAll('distributor', 'App\Component\Migration\ImportDistributors::insert', 500);
