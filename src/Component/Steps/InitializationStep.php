@@ -15,8 +15,7 @@ use Psr\Log\LoggerInterface;
  */
 class InitializationStep implements StepInterface
 {
-    const SQL_FILE_DIR = 'data/mc2.sql';
-//    const SQL_FILE_DIR = '../data/mc2.sql'; // if we call directly the command we have to use this value
+    const SQL_FILE_NAME = 'mc2.sql';
 
     public static function execute(LoggerInterface $logger)
     {
@@ -25,7 +24,7 @@ class InitializationStep implements StepInterface
         $logger->info('Init operations just finished');
 
         // import all tables and data into MySQL MC2 database
-        MySQLImport::import(self::SQL_FILE_DIR);
+        MySQLImport::import($_ENV['DATA_FILE_PATH'].self::SQL_FILE_NAME);
         $logger->info('MySQL initalization import finished.');
 
         // clean data from PSQL DataBase and remove useless MySQL tables
