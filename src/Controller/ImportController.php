@@ -42,8 +42,8 @@ class ImportController extends AbstractController
 
         $logger->info('Import process is about to be launched');
         $process = Process::fromShellCommandline('cd ../ && sh start.sh');
-        sleep($_ENV['SLEEP_TIME']); // not sure exactly why, but processus is killed in prod if we don't add it
         $process->start();
+        sleep($_ENV['SLEEP_TIME']); // not sure exactly why, but processus is killed in prod if we don't add it
         return new JsonResponse('Import has been launched.', 200);
     }
 
