@@ -17,6 +17,7 @@ class ImportStartCommand extends Command
 {
     protected static $defaultName = 'import:start';
 
+    /** @var LoggerInterface LoggerInterface */
     private $logger;
 
     public function __construct(LoggerInterface $logger, string $name = null)
@@ -35,6 +36,7 @@ class ImportStartCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $this->logger->info('Command import:start has been launched');
         AllSteps::execute($this->logger);
         $io->success("You have successfully imported all the data in the new database.");
 
