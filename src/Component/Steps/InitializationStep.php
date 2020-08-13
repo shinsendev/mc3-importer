@@ -16,7 +16,6 @@ use Psr\Log\LoggerInterface;
 class InitializationStep implements StepInterface
 {
     const SQL_FILE_NAME = 'mc2.sql';
-//    const SQL_FILE_DIR = '../data/mc2.sql'; // if we call directly the command we have to use this value
 
     public static function execute(LoggerInterface $logger)
     {
