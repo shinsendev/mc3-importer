@@ -18,7 +18,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Process\Process;
 
@@ -40,6 +39,11 @@ class ImportController extends AbstractController
         if (!Security::isGranted($request)) {
             return new JsonResponse(self::NO_AURTHORIZATION_MESSAGE, 403);
         }
+
+//        to debug
+//        $process = Process::fromShellCommandline('cd ../ && sh start.sh');
+//        $process->run();
+//        dd($process->getOutput());
 
         $logger->info('Import process is about to be launched');
         $process = Process::fromShellCommandline('cd ../ && sh start.sh');

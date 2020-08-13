@@ -9,6 +9,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * Class ImportStartCommand
+ * @package App\Command
+ */
 class ImportStartCommand extends Command
 {
     protected static $defaultName = 'import:start';
@@ -31,9 +35,7 @@ class ImportStartCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-
         AllSteps::execute($this->logger);
-
         $io->success("You have successfully imported all the data in the new database.");
 
         return 0;

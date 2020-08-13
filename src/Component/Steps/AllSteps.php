@@ -12,6 +12,7 @@ class AllSteps implements StepInterface
     public static function execute(LoggerInterface $logger):bool
     {
         set_time_limit(300);
+        $logger->info('Import has started');
 
         // Step 1: initialization
         InitializationStep::execute($logger);
