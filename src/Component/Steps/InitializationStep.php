@@ -20,10 +20,11 @@ class InitializationStep implements StepInterface
     public static function execute(LoggerInterface $logger)
     {
         // delete MC2 MySQL data if exists and create a new one
-        InitOperation::init();
+        InitOperation::init($logger);
         $logger->info('Init operations just finished');
 
         // import all tables and data into MySQL MC2 database
+        $logger->info('sql file path is :'.$_ENV['DATA_FILE_PATH'].self::SQL_FILE_NAME);
         MySQLImport::import($_ENV['DATA_FILE_PATH'].self::SQL_FILE_NAME);
         $logger->info('MySQL initalization import finished.');
 
