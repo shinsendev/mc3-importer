@@ -3,17 +3,6 @@
 namespace App\Controller;
 
 use App\Component\Security\Security;
-use App\Component\Steps\AllSteps;
-use App\Component\Steps\CommentStep;
-use App\Component\Steps\ContributorStep;
-use App\Component\Steps\FIlmStep;
-use App\Component\Steps\InitializationStep;
-use App\Component\Steps\MiscellaneousStep;
-use App\Component\Steps\NumberStep;
-use App\Component\Steps\PersonStep;
-use App\Component\Steps\PostProcessStep;
-use App\Component\Steps\SongStep;
-use App\Component\Steps\ThesaurusStep;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
