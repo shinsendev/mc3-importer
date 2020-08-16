@@ -14,7 +14,7 @@ class InitOperation
     {
         MySQLInitialization::init();
         $logger->info('All MySQL tables have been deleted');
-        ImportEntityManager::updateImportEntity(ImportEntityManager::STARTED_STATUS, true);
+        ImportEntityManager::updateImportEntity(ImportEntityManager::STARTED_STATUS, TRUE);
         $logger->info('Import entity has a started status');
     }
 }
