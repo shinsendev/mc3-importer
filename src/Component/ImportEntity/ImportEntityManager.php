@@ -15,7 +15,7 @@ class ImportEntityManager
     public static function updateImportEntity(string $status)
     {
         $connection = PostgreSQLConnection::connection();
-        $rsl = $connection->prepare('UPDATE import SET status = :status, updated_at = NOW(), in_progress = false, WHERE id IN (SELECT max(id) FROM import)');
+        $rsl = $connection->prepare('UPDATE import SET status = :status, updated_at = NOW(), in_progress = false WHERE id IN (SELECT max(id) FROM import)');
         $rsl->execute(['status' => $status]);
     }
 }
