@@ -14,6 +14,7 @@ class AllSteps implements StepInterface
         set_time_limit(300);
         $logger->info('Import has started');
 
+        try {
         // Step 1: initialization
         InitializationStep::execute($logger);
 
@@ -43,6 +44,9 @@ class AllSteps implements StepInterface
 
         // step 10: post process
         PostProcessStep::execute($logger);
+        } catch (\Error $e) {
+            throw new \Exception('Error during importer : '.$e->getMessage());
+        }
 
         return true;
     }
