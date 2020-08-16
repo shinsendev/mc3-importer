@@ -12,7 +12,7 @@ class ImportEntityManager
     const FAILED_STATUS = 'failed';
     const SUCCESS_STATUS = 'success';
 
-    public static function updateImportEntity(string $status, bool $inProgress = FALSE)
+    public static function updateImportEntity(string $status, int $inProgress = 0)
     {
         $connection = PostgreSQLConnection::connection();
         $rsl = $connection->prepare('UPDATE import SET status = :status, updated_at = NOW(), in_progress = :progress WHERE id IN (SELECT max(id) FROM import)');

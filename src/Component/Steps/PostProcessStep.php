@@ -17,7 +17,7 @@ class PostProcessStep implements StepInterface
     {
         MySQLClean::finish();
         PgSQLClean::finish();
-        ImportEntityManager::updateImportEntity(ImportEntityManager::SUCCESS_STATUS);
+        ImportEntityManager::updateImportEntity(ImportEntityManager::SUCCESS_STATUS, 0);
     }
 
 }
