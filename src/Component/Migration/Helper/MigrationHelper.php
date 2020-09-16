@@ -57,9 +57,6 @@ class MigrationHelper
             MigrationHelper::importBulk($offset, $limit, $pgsql, $mysql, 'SELECT * FROM '.$itemType.' LIMIT %d, %d', $insertFunctionName, $itemType);
             $offset = $offset+$limit;
         }
-
-        // todo: remove the mysql_id column (add to final clean function)
-//        MigrationHelper::removeSQLid($pgsql, $itemType);
     }
 
     /**

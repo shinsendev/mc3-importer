@@ -69,10 +69,11 @@ class ImportAttributes implements ImporterInterface
     /**
      * @param string $categoryTitle
      * @param string $mysqlTableName
-     * @param string $relationTableName
+     * @param string $mySQLRelationTableName
+     * @param string $pgSQLRelationTableName
      * @param string $model
      * @param int $limit
-     * @param bool $isThesaurus
+     * @param string|null $description
      */
     public static function importExternalThesaurusString(
         string $categoryTitle,
@@ -80,7 +81,8 @@ class ImportAttributes implements ImporterInterface
         string $mySQLRelationTableName,
         string $pgSQLRelationTableName,
         string $model,
-        int $limit = 1000
+        int $limit = 1000,
+        string $description = null
     ) :void
     {
         // connect to PostgreSQL and insert the usefull data of the list
@@ -96,7 +98,7 @@ class ImportAttributes implements ImporterInterface
             'title' => $categoryTitle,
             'code' => $categoryTitle,
             'model' => $model,
-            'description' => null,
+            'description' => $description,
             'createdAt' => $basics['date'],
             'updatedAt' => $basics['date'],
             'uuid' => $basics['uuid']
