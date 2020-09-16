@@ -94,7 +94,6 @@ class MySQLClean
     public static function finish()
     {
         $connection = PostgreSQLConnection::connection();
-        // todo remove all mysql id
 
         // update all categories models
         $sqlList = [
