@@ -20,8 +20,8 @@ class PostProcessStep implements StepInterface
         ManuelUpdate::execute();
 
         // clean
-//        MySQLClean::finish();
-//        PgSQLClean::finish();
+        MySQLClean::finish();
+        PgSQLClean::finish();
 
         // update import entity
         ImportEntityManager::updateImportEntity(ImportEntityManager::SUCCESS_STATUS, 0);
