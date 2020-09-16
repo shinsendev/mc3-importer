@@ -30,19 +30,19 @@ Harrison's Reports and Film Reviews. See https://archive.org.");
     private static function updateAttributes(\PDO $psql):void
     {
         // censorships
-        self::updateAttribute($psql,'costumes-Specific', "censorship", "The PCA forbids a specific costume, usually based on its photography sent by the studio.");
+        self::updateAttribute($psql,'costumes-specific', "censorship", "The PCA forbids a specific costume, usually based on its photography sent by the studio.");
         self::updateAttribute($psql,'costumes-standard', "censorship", "Usual warning given to any producer about revealing costumes and reaffirmation of the necessity of being cautious.");
         self::updateAttribute($psql,'costumes-standard', "censorship", "Usual warning given to any producer about revealing costumes and reaffirmation of the necessity of being cautious.");
         self::updateAttribute($psql, 'dance', "censorship", "Choreographic contents are censored, because of suggestive moves. This concerns a lot of numbers based on burlesque dancing (fan dances in particular).");
-        self::updateAttribute($psql,'dialogue', "Some lines have to be rewritten, usually because of profanity or double meaning.");
-        self::updateAttribute($psql,'ethnic representation', "The PCA warns the studio about the accents, or the image given of ethnic communities or foreign populations.");
-        self::updateAttribute($psql,'forbidden song', "A song is fully forbidden, or has to be entirely rewritten.");
-        self::updateAttribute($psql,'lyrics', "Specific rewriting of some lines of a song.");
-        self::updateAttribute($psql,'lyrics-unsignificant', "Usual criticism on the lyrics : sexual innuendo or possible double entendre, coarse language.");
-        self::updateAttribute($psql,'narrative-major problem', "The script has to be modified and rewritten because of a major narrative issue (prostitution, religion, adultery, crime, the image given of institutions, alcoholism...).");
-        self::updateAttribute($psql,'narrative-minor problem', "Usual remarks on the cautious treatment of alcohol drinking, gambling, toilets, representation of marriage. This implies minor cuts in the script.");
-        self::updateAttribute($psql,'other', "Includes inappropriate gestures (pat on the botton, \"razzberry sound\"), the treatment of animals, playing with fire (smoking in bed...), advertising...");
-        self::updateAttribute($psql,'"sex perversion"', "What the PCA refers to as \"sex perversion\", which means suggested or implied homosexuality.");
+        self::updateAttribute($psql,'dialogue', "censorship","Some lines have to be rewritten, usually because of profanity or double meaning.");
+        self::updateAttribute($psql,'ethnic representation', "censorship","The PCA warns the studio about the accents, or the image given of ethnic communities or foreign populations.");
+        self::updateAttribute($psql,'forbidden song', "censorship","A song is fully forbidden, or has to be entirely rewritten.");
+        self::updateAttribute($psql,'lyrics', "censorship","Specific rewriting of some lines of a song.");
+        self::updateAttribute($psql,'lyrics-unsignificant', "censorship","Usual criticism on the lyrics : sexual innuendo or possible double entendre, coarse language.");
+        self::updateAttribute($psql,'narrative-major problem', "censorship","The script has to be modified and rewritten because of a major narrative issue (prostitution, religion, adultery, crime, the image given of institutions, alcoholism...).");
+        self::updateAttribute($psql,'narrative-minor problem', "censorship","Usual remarks on the cautious treatment of alcohol drinking, gambling, toilets, representation of marriage. This implies minor cuts in the script.");
+        self::updateAttribute($psql,'other', "censorship","Includes inappropriate gestures (pat on the botton, \"razzberry sound\"), the treatment of animals, playing with fire (smoking in bed...), advertising...");
+        self::updateAttribute($psql,'"sex perversion"', "censorship","What the PCA refers to as \"sex perversion\", which means suggested or implied homosexuality.");
 
         // legion
         self::updateAttribute($psql,'A1', "legion", "Suitable for all audiences");
