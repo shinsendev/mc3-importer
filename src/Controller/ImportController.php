@@ -2,11 +2,15 @@
 
 namespace App\Controller;
 
+use App\Component\Event\ImportListener;
 use App\Component\Security\Security;
+use App\Message\ImportLauncher;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Process\Process;
 
@@ -22,7 +26,7 @@ class ImportController extends AbstractController
      * @Route("/import/all", name="import", methods={"POST"})
      *
      */
-    public function import(Request $request, LoggerInterface $logger)
+    public function import(Request $request, LoggerInterface $logger, MessageBusInterface $messageBus)
     {
         // check if client is granted to make import
         if (!Security::isGranted($request)) {
@@ -30,9 +34,9 @@ class ImportController extends AbstractController
         }
 
         $logger->info('Import process is about to be launched');
-        $process = Process::fromShellCommandline('cd ../ && sh start.sh');
-        $process->start();
-        sleep($_ENV['SLEEP_TIME']); // not sure exactly why, but processus is killed in prod if we don't add it
+        $message = new ImportLauncher();
+        $messageBus->dispatch($message);
+
         return new JsonResponse('Import has been launched.', 200);
     }
 
