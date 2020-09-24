@@ -32,7 +32,7 @@ class ImportNumbers implements ImporterInterface
         // use $number['film_id']`
         $filmId = FilmHelper::findFilmByMsqlId((int)$number['film_id'], $pgsql, $mysql);
 
-        $sql = "INSERT INTO number (title, film_id, begin_tc, end_tc, shots, uuid, created_at, updated_at, mysql_id, dubbing) VALUES (:title, :film, :begin, :end, :shots, :uuid, :createdAt, :updatedAt, :mysqlId, :dubbing)";
+        $sql = "INSERT INTO number (title, film_id, begin_tc, end_tc, shots, uuid, created_at, updated_at, mysql_id, dubbing, reference) VALUES (:title, :film, :begin, :end, :shots, :uuid, :createdAt, :updatedAt, :mysqlId, :dubbing, :mysqlId)";
         $rsl = $pgsql->prepare($sql);
         $rsl->execute([
             'title' => ($number['title']) ? $number['title'] : null,
