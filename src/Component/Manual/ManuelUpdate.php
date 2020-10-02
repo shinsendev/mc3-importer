@@ -24,7 +24,7 @@ Harrison's Reports and Film Reviews. See https://archive.org.");
         self::updateCategory($psql, 'legion', "Legion of Decency", "Film rating by the Catholic Legion of Decency, starting in 1933. Cf. Motion Pictures Classified by National Legion of Decency, Feb 1936-Oct. 1959 (New York: National Legion of Decency, 1959).");
         self::updateCategory($psql,'protestant', "Protestant Motion Picture Council");
         self::updateCategory($psql, 'state', "Countries and US States where the film was censored", "Countries and US States where the film was at least partially censored. This goes from minor cuts to stronger issues. Information available in the PCA file of the film.");
-        self::updateCategory($psql, 'verdict', " PCA verdict", "Production Code Administration verdict on the first version of the script submitted by the producer. These data come out of the PCA collection at the Margaret Herrick Library (physical and digital). The phrasings are those usually used in the correspondence and are those found in the fist letter from the PCA to the studio. Of course the films first viewed as \"unacceptable\" were later made acceptable in the production process.");
+        self::updateCategory($psql, 'verdict', "PCA verdict", "Production Code Administration verdict on the first version of the script submitted by the producer. These data come out of the PCA collection at the Margaret Herrick Library (physical and digital). The phrasings are those usually used in the correspondence and are those found in the fist letter from the PCA to the studio. Of course the films first viewed as \"unacceptable\" were later made acceptable in the production process.");
     }
 
     private static function updateAttributes(\PDO $psql):void

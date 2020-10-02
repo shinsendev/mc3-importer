@@ -36,19 +36,32 @@ There are two steps, first the importer creates a new MySQL table with old data.
 
 Then, the application imports the data of this MySQL table in the new PostgreSQL one.
 
-## Initiate the project
+### Initiate the project
 
 Recreate MySQL MC2 database
 
-## Create the model and import data
+### Create the model and import data
 
 Create the database model and import all the data from a SQL file copy of MC2 previous database.
 
-## Clean data
+### Clean data
 
 Delete all useless tables from old model like Stagenumber or Stageshow and useless columns for number, films, etc.
 
 ## Export data
 
+...
 
+## Production
 
+On production, you need to always have two processes running:
+- a local webserver (not a good pratice)
+- the messages consumer
+
+```
+php -S 127.0.0.1:8001 public/index.php
+```
+
+```
+php bin/console messenger:consume
+```
