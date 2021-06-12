@@ -29,7 +29,7 @@ class ImportStartCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Import command, do  not use directly without the controller')
+            ->setDescription('Import command: correct command to launch now')
         ;
     }
 
