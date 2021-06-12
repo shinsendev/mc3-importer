@@ -64,8 +64,7 @@ class ImportFilms implements ImporterInterface
         $personParams['targetMySQLId'] =  $film['film_id'];
 
         // add directors
-//        PersonHelper::importLinkedPersons('film_has_person', 'director', $pgsql,  $mysql, $personParams);
-        PersonHelper::importLinkedPersons('film_has_director', 'director', $pgsql,  $mysql, $personParams);
+        PersonHelper::importLinkedPersons('film_has_person', 'director', $pgsql,  $mysql, $personParams);
 
         // add producers
         PersonHelper::importLinkedPersons('film_has_producer', 'producer', $pgsql,  $mysql, $personParams);
